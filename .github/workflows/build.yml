@@ -19,21 +19,24 @@ jobs:
 
     steps:
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
-          python-version: 3.x  # Replace with your desired Python version
+          python-version: 3.10.7  # Replace with your desired Python version
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
+      - name: Install pyinstaller
+        run: pip install pyinstaller
+        
       - name: Install dependencies
         run: pip install -r requirements.txt  # Adjust as needed
 
       - name: Build Binary
-        run: pyinstaller -F your_script.py  # Replace with your script name
+        run: pyinstaller -F PyROE.py  # Replace with your script name
 
       - name: Upload Binary
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ runner.os }}-binary
           path: dist/  # Adjust to match your build output directory

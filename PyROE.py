@@ -198,7 +198,7 @@ class PDFGeneratorApp(QMainWindow):
         self.irs_commissioner_text = QLineEdit()
         self.local_irs_service_center_street_address_label = QLabel('Your local IRS service center street address:')
         self.local_irs_service_center_street_address_text = QLineEdit()
-        self.local_irs_service_center_city_label = QLabel('YourL local IRS service center city:')
+        self.local_irs_service_center_city_label = QLabel('Your local IRS service center city:')
         self.local_irs_service_center_city_text = QLineEdit()
         self.local_irs_service_center_state_label = QLabel('Your local IRS service center state:')
         self.local_irs_service_center_state_combo = QComboBox()

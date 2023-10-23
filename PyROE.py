@@ -290,7 +290,7 @@ class PDFGeneratorApp(QMainWindow):
             required_width + 400,
             required_height
         )
-        self.setWindowTitle('ROE Doc Generator v0.1')
+        self.setWindowTitle('PyROE v0.1')
         self.show()
         #########################################################################################################
         #                       END OF SCREEN SIZE DETECTION (to center the app on the screen)

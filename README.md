@@ -14,7 +14,6 @@ User agrees to indemnify and hold Licensor harmless from any and all claims, lia
 ## Limitation of Liability
 IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DAMAGES WHATSOEVER, INCLUDING, BUT NOT LIMITED TO, DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE.
 
-
 # Usage
 1. This application will prompt you for personal information to generate 3 files that could be used as INSPIRATION for a Revocation of Election to be sent to the IRS.
 2. ALL fields must be populated with information before the "Generate ROE Documents" will perform an action
@@ -24,6 +23,8 @@ These documents include:
 - Letter of Intent
 - Affidavit
 - Supporting Evidence
+
+[![Video](https://img.youtube.com/vi/b36kzEt43gU/0.jpg)](https://www.youtube.com/watch?v=b36kzEt43gU)
 
 The inspiration for this came from:
 

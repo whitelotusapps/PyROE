@@ -1,0 +1,39 @@
+name: Build Cross-Platform Binaries
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on pushes to the main branch
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x  # Replace with your desired Python version
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt  # Adjust as needed
+
+      - name: Build Binary
+        run: pyinstaller -F your_script.py  # Replace with your script name
+
+      - name: Upload Binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}-binary
+          path: dist/  # Adjust to match your build output directory

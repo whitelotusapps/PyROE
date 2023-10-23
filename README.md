@@ -24,3 +24,11 @@ These documents include:
 - Letter of Intent
 - Affidavit
 - Supporting Evidence
+
+The inspiration for this came from:
+
+[Letter of Intent](https://www.studocu.com/en-us/u/43384403?sid=01695328459)
+
+[Affidavit](https://pdfcoffee.com/2affidavitforroe-rod-class-pdf-free.html)
+
+[Supplemental Evidence](https://pdfcoffee.com/3johnqpublicsupplementalfiling-rod-class-pdf-free.html)

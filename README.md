@@ -4,14 +4,16 @@ PyROE is an EDUCATIONAL USE ONLY application.
 The author of this software makes no claims to its efficacy, correctness, completeness, truthfulness, or any other hopes or dreams the end-user may assign to the usage of this software.
 
 # Usage Agreement
-Disclaimer of Liability:
-   THE SOFTWARE IS PROVIDED "AS IS," WITHOUT ANY WARRANTIES, EXPRESS OR IMPLIED. LICENSOR DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. LICENSOR SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE SOFTWARE.
 
-Indemnification:
-   User agrees to indemnify and hold Licensor harmless from any and all claims, liabilities, losses, damages, costs, and expenses (including attorney's fees) arising from User's use of the Software or any violation of this EULA.
+## Disclaimer of Liability
+THE SOFTWARE IS PROVIDED "AS IS," WITHOUT ANY WARRANTIES, EXPRESS OR IMPLIED. LICENSOR DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. LICENSOR SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THE SOFTWARE.
 
-Limitation of Liability:
-   IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DAMAGES WHATSOEVER, INCLUDING, BUT NOT LIMITED TO, DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE.
+## Indemnification
+User agrees to indemnify and hold Licensor harmless from any and all claims, liabilities, losses, damages, costs, and expenses (including attorney's fees) arising from User's use of the Software or any violation of this EULA.
+
+## Limitation of Liability
+IN NO EVENT SHALL LICENSOR BE LIABLE FOR ANY DAMAGES WHATSOEVER, INCLUDING, BUT NOT LIMITED TO, DIRECT, INDIRECT, INCIDENTAL, CONSEQUENTIAL, OR EXEMPLARY DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE.
+
 
 # Usage
 1. This application will prompt you for personal information to generate 3 files that could be used as INSPIRATION for a Revocation of Election to be sent to the IRS.

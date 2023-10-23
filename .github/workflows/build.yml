@@ -21,7 +21,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.x  # Replace with your desired Python version
+          python-version: 3.10.7  # Replace with your desired Python version
+        env:
+          NODE_VERSION: 16          
 
       - name: Check out code
         uses: actions/checkout@v2

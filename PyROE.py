@@ -17,6 +17,7 @@ from docx.enum.style import WD_STYLE_TYPE  # Import WD_STYLE_TYPE
 from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.enum.text import WD_BREAK
 from docx.oxml.ns import qn
+import PyPDF2
 
 class PDFGeneratorApp(QMainWindow):
     def __init__(self):
@@ -261,6 +262,149 @@ class PDFGeneratorApp(QMainWindow):
         tab4.setLayout(tab4.layout)
         tab_widget.addTab(tab4, "Notary Information")
 
+
+        #########################################################################################################
+        # Tab 5: W-8BEN PDF Information
+        #########################################################################################################
+        tab5 = QWidget()
+        tab5.layout = QVBoxLayout()
+
+        self.include_ohio_state_assembly_edits_label = QLabel('Would you like to adjust your W-8BEN to include Ohio State Assembly Edits?')
+        self.include_ohio_state_assembly_edits_combo = QComboBox()
+        self.include_ohio_state_assembly_edits_combo.addItems(["", "Yes", "No"])
+
+        self.customize_ohio_state_assembly_text_label = QLabel('Would you like to customize any of the Ohio State Assembly Edit text?')
+        self.customize_ohio_state_assembly_text_combo = QComboBox()
+        self.customize_ohio_state_assembly_text_combo.addItems(["", "Yes", "No"])
+
+        self.custom_ohio_state_assembly_text1_label = QLabel("Part 1, Identification of \"Non-Resident Alien\"")
+        self.custom_ohio_state_assembly_text1_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text2_label = QLabel("Part 1, Name of individual who is the \"Non-Resident Alien\"")
+        self.custom_ohio_state_assembly_text2_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text3_label = QLabel("Permanent \"domicile\" address")
+        self.custom_ohio_state_assembly_text3_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text4_label = QLabel("Margin text, \"Speical Private and Priority\". You will need to enter new lines (carriage returns) as \"\\n\"")
+        self.custom_ohio_state_assembly_text4_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text5_label = QLabel("Part 2, Field 9: \"non-resident alien owner\"")
+        self.custom_ohio_state_assembly_text5_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text6_label = QLabel("Part 3, \"non-resident alient owner\"")
+        self.custom_ohio_state_assembly_text6_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text7_label = QLabel("Signature line \"© All Right Reserved 28 U.S.C. § 1746(1)\"")
+        self.custom_ohio_state_assembly_text7_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text8_label = QLabel("Below signature line \"non-resident alient owner\"")
+        self.custom_ohio_state_assembly_text8_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text9_label = QLabel("Below signature line (or individual authorized to sign for \"non-resident alient owner\")")
+        self.custom_ohio_state_assembly_text9_text = QLineEdit()
+
+        self.custom_ohio_state_assembly_text10_label = QLabel("Print name of signer line")
+        self.custom_ohio_state_assembly_text10_text = QLineEdit()
+
+
+        # Setting default text for custom Ohio State Assembly Edit text fields
+        self.custom_ohio_state_assembly_text1_text.setText("Non-Resident Alien")
+        self.custom_ohio_state_assembly_text2_text.setText("Non-Resident Alien")
+        self.custom_ohio_state_assembly_text3_text.setText("  domicile")
+        self.custom_ohio_state_assembly_text4_text.setText("Speical\n\nPrivate\n\nand\n\nPriority")
+        self.custom_ohio_state_assembly_text5_text.setText("non-resident alien owner")
+        self.custom_ohio_state_assembly_text6_text.setText("non-resident alien owner")
+        self.custom_ohio_state_assembly_text7_text.setText("© All Right Reserved 28 U.S.C. § 1746(1)")
+        self.custom_ohio_state_assembly_text8_text.setText("non-resident alient owner")
+        self.custom_ohio_state_assembly_text9_text.setText("non-resident alient owner")
+        self.custom_ohio_state_assembly_text10_text.setText("In Exclusive Equity")
+
+        self.date_of_birth_label = QLabel('What is your date of birth? (MM/DD/YYYY)')
+        self.date_of_birth_text = QLineEdit()
+
+        tab5.layout.addWidget(self.include_ohio_state_assembly_edits_label)
+        tab5.layout.addWidget(self.include_ohio_state_assembly_edits_combo)
+        tab5.layout.addWidget(self.customize_ohio_state_assembly_text_label)
+        tab5.layout.addWidget(self.customize_ohio_state_assembly_text_combo)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text1_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text1_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text2_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text2_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text3_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text3_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text4_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text4_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text5_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text5_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text6_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text6_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text7_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text7_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text8_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text8_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text9_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text9_text)
+
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text10_label)
+        tab5.layout.addWidget(self.custom_ohio_state_assembly_text10_text)
+
+        tab5.layout.addWidget(self.date_of_birth_label)
+        tab5.layout.addWidget(self.date_of_birth_text)
+
+        # Connect the first question's combobox to a slot
+        self.include_ohio_state_assembly_edits_combo.currentIndexChanged.connect(self.toggleCustomizeText)
+
+        # Initially hide the second question
+        self.customize_ohio_state_assembly_text_label.hide()
+        self.customize_ohio_state_assembly_text_combo.hide()
+
+        self.custom_ohio_state_assembly_text1_label.hide()
+        self.custom_ohio_state_assembly_text1_text.hide()
+
+        self.custom_ohio_state_assembly_text2_label.hide()
+        self.custom_ohio_state_assembly_text2_text.hide()
+
+        self.custom_ohio_state_assembly_text3_label.hide()
+        self.custom_ohio_state_assembly_text3_text.hide()
+
+        self.custom_ohio_state_assembly_text4_label.hide()
+        self.custom_ohio_state_assembly_text4_text.hide()
+
+        self.custom_ohio_state_assembly_text5_label.hide()
+        self.custom_ohio_state_assembly_text5_text.hide()
+
+        self.custom_ohio_state_assembly_text6_label.hide()
+        self.custom_ohio_state_assembly_text6_text.hide()
+
+        self.custom_ohio_state_assembly_text7_label.hide()
+        self.custom_ohio_state_assembly_text7_text.hide()
+
+        self.custom_ohio_state_assembly_text8_label.hide()
+        self.custom_ohio_state_assembly_text8_text.hide()
+
+        self.custom_ohio_state_assembly_text9_label.hide()
+        self.custom_ohio_state_assembly_text9_text.hide()
+
+        self.custom_ohio_state_assembly_text10_label.hide()
+        self.custom_ohio_state_assembly_text10_text.hide()
+
+
+        # Connect the first question's combobox to a slot
+        self.customize_ohio_state_assembly_text_combo.currentIndexChanged.connect(self.toggleCustomizeTextOptions)
+
+        tab5.setLayout(tab5.layout)
+        tab_widget.addTab(tab5, "W-8BEN PDF Info")
+
         #########################################################################################################
         #                       END OF CREATING TABS / TAB LAYOUT
         #########################################################################################################
@@ -275,27 +419,119 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         #                       START OF SCREEN SIZE DETECTION (to center the app on the screen)
         #########################################################################################################
-        # Calculate the required size based on content
-        required_width = tab_widget.sizeHint().width()
-        required_height = layout.sizeHint().height()
-
-        # Calculate the screen geometry
-        screen = self.screen()
-        screen_width = screen.size().width()
-        screen_height = screen.size().height()
-        # Center the window on the screen
-        self.setGeometry(
-            (screen_width - required_width) // 2 - 200,
-            (screen_height - required_height) // 2,
-            required_width + 400,
-            required_height
-        )
-        self.setWindowTitle('PyROE v0.1')
-        self.show()
+        self.setWindowTitle('PyROE v0.2')
+        self.showMaximized()
         #########################################################################################################
         #                       END OF SCREEN SIZE DETECTION (to center the app on the screen)
         #########################################################################################################
 
+    def toggleCustomizeText(self, index):
+        if index == 1:  # If "Yes" is selected in the first question
+            self.customize_ohio_state_assembly_text_label.show()
+            self.customize_ohio_state_assembly_text_combo.show()
+        else:
+            self.customize_ohio_state_assembly_text_label.hide()
+            self.customize_ohio_state_assembly_text_combo.hide()
+            self.customize_ohio_state_assembly_text_label.hide()
+            self.customize_ohio_state_assembly_text_combo.hide()
+
+            self.custom_ohio_state_assembly_text1_label.hide()
+            self.custom_ohio_state_assembly_text1_text.hide()
+
+            self.custom_ohio_state_assembly_text2_label.hide()
+            self.custom_ohio_state_assembly_text2_text.hide()
+
+            self.custom_ohio_state_assembly_text3_label.hide()
+            self.custom_ohio_state_assembly_text3_text.hide()
+
+            self.custom_ohio_state_assembly_text4_label.hide()
+            self.custom_ohio_state_assembly_text4_text.hide()
+
+            self.custom_ohio_state_assembly_text5_label.hide()
+            self.custom_ohio_state_assembly_text5_text.hide()
+
+            self.custom_ohio_state_assembly_text6_label.hide()
+            self.custom_ohio_state_assembly_text6_text.hide()
+
+            self.custom_ohio_state_assembly_text7_label.hide()
+            self.custom_ohio_state_assembly_text7_text.hide()
+
+            self.custom_ohio_state_assembly_text8_label.hide()
+            self.custom_ohio_state_assembly_text8_text.hide()
+
+            self.custom_ohio_state_assembly_text9_label.hide()
+            self.custom_ohio_state_assembly_text9_text.hide()
+
+            self.custom_ohio_state_assembly_text10_label.hide()
+            self.custom_ohio_state_assembly_text10_text.hide()
+
+    def toggleCustomizeTextOptions(self, index):
+        if index == 1:  # If "Yes" is selected in the first question
+            self.customize_ohio_state_assembly_text_label.show()
+            self.customize_ohio_state_assembly_text_combo.show()
+            # Show the additional labels for customizing Ohio State Assembly Edit text
+            self.custom_ohio_state_assembly_text1_label.show()
+            self.custom_ohio_state_assembly_text1_text.show()
+
+            self.custom_ohio_state_assembly_text2_label.show()
+            self.custom_ohio_state_assembly_text2_text.show()
+
+            self.custom_ohio_state_assembly_text3_label.show()
+            self.custom_ohio_state_assembly_text3_text.show()
+
+            self.custom_ohio_state_assembly_text4_label.show()
+            self.custom_ohio_state_assembly_text4_text.show()
+
+            self.custom_ohio_state_assembly_text5_label.show()
+            self.custom_ohio_state_assembly_text5_text.show()
+
+            self.custom_ohio_state_assembly_text6_label.show()
+            self.custom_ohio_state_assembly_text6_text.show()
+
+            self.custom_ohio_state_assembly_text7_label.show()
+            self.custom_ohio_state_assembly_text7_text.show()
+
+            self.custom_ohio_state_assembly_text8_label.show()
+            self.custom_ohio_state_assembly_text8_text.show()
+
+            self.custom_ohio_state_assembly_text9_label.show()
+            self.custom_ohio_state_assembly_text9_text.show()
+
+            self.custom_ohio_state_assembly_text10_label.show()
+            self.custom_ohio_state_assembly_text10_text.show()
+        else:
+            self.customize_ohio_state_assembly_text_label.hide()
+            self.customize_ohio_state_assembly_text_combo.hide()
+            # Hide the additional labels for customizing Ohio State Assembly Edit text
+            self.custom_ohio_state_assembly_text1_label.hide()
+            self.custom_ohio_state_assembly_text1_text.hide()
+
+            self.custom_ohio_state_assembly_text2_label.hide()
+            self.custom_ohio_state_assembly_text2_text.hide()
+
+            self.custom_ohio_state_assembly_text3_label.hide()
+            self.custom_ohio_state_assembly_text3_text.hide()
+
+            self.custom_ohio_state_assembly_text4_label.hide()
+            self.custom_ohio_state_assembly_text4_text.hide()
+
+            self.custom_ohio_state_assembly_text5_label.hide()
+            self.custom_ohio_state_assembly_text5_text.hide()
+
+            self.custom_ohio_state_assembly_text6_label.hide()
+            self.custom_ohio_state_assembly_text6_text.hide()
+
+            self.custom_ohio_state_assembly_text7_label.hide()
+            self.custom_ohio_state_assembly_text7_text.hide()
+
+            self.custom_ohio_state_assembly_text8_label.hide()
+            self.custom_ohio_state_assembly_text8_text.hide()
+
+            self.custom_ohio_state_assembly_text9_label.hide()
+            self.custom_ohio_state_assembly_text9_text.hide()
+
+            self.custom_ohio_state_assembly_text10_label.hide()
+            self.custom_ohio_state_assembly_text10_text.hide()
 
     def generate_pdf(self):
 
@@ -305,58 +541,57 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         def generate_state_dicts(states):
             state_abbreviations = {
-                "Alabama": ("Alabama Republic", "Alabama", "AL"),
-                "Alaska": ("Alaska Republic", "Alaska", "AK"),
-                "Arizona": ("Arizona Republic", "Arizona", "AZ"),
-                "Arkansas": ("Arkansas Republic", "Arkansas", "AR"),
-                "California": ("California Republic", "California", "CA"),
-                "Colorado": ("Colorado Republic", "Colorado", "CO"),
-                "Connecticut": ("Connecticut Republic", "Connecticut", "CT"),
-                "Delaware": ("Delaware Republic", "Delaware", "DE"),
-                "Florida": ("Florida Republic", "Florida", "FL"),
-                "Georgia": ("Georgia Republic", "Georgia", "GA"),
-                "Hawaii": ("Hawaii Republic", "Hawaii", "HI"),
-                "Idaho": ("Idaho Republic", "Idaho", "ID"),
-                "Illinois": ("Illinois Republic", "Illinois", "IL"),
-                "Indiana": ("Indiana Republic", "Indiana", "IN"),
-                "Iowa": ("Iowa Republic", "Iowa", "IA"),
-                "Kansas": ("Kansas Republic", "Kansas", "KS"),
-                "Kentucky": ("Kentucky Republic", "Kentucky", "KY"),
-                "Louisiana": ("Louisiana Republic", "Louisiana", "LA"),
-                "Maine": ("Maine Republic", "Maine", "ME"),
-                "Maryland": ("Maryland Republic", "Maryland", "MD"),
-                "Massachusetts": ("Massachusetts Republic", "Massachusetts", "MA"),
-                "Michigan": ("Michigan Republic", "Michigan", "MI"),
-                "Minnesota": ("Minnesota Republic", "Minnesota", "MN"),
-                "Mississippi": ("Mississippi Republic", "Mississippi", "MS"),
-                "Missouri": ("Missouri Republic", "Missouri", "MO"),
-                "Montana": ("Montana Republic", "Montana", "MT"),
-                "Nebraska": ("Nebraska Republic", "Nebraska", "NE"),
-                "Nevada": ("Nevada Republic", "Nevada", "NV"),
-                "New Hampshire": ("New Hampshire Republic", "New Hampshire", "NH"),
-                "New Jersey": ("New Jersey Republic", "New Jersey", "NJ"),
-                "New Mexico": ("New Mexico Republic", "New Mexico", "NM"),
-                "New York": ("New York Republic", "New York", "NY"),
-                "North Carolina": ("North Carolina Republic", "North Carolina", "NC"),
-                "North Dakota": ("North Dakota Republic", "North Dakota", "ND"),
-                "Ohio": ("Ohio Republic", "Ohio", "OH"),
-                "Oklahoma": ("Oklahoma Republic", "Oklahoma", "OK"),
-                "Oregon": ("Oregon Republic", "Oregon", "OR"),
-                "Pennsylvania": ("Pennsylvania Republic", "Pennsylvania", "PA"),
-                "Rhode Island": ("Rhode Island Republic", "Rhode Island", "RI"),
-                "South Carolina": ("South Carolina Republic", "South Carolina", "SC"),
-                "South Dakota": ("South Dakota Republic", "South Dakota", "SD"),
-                "Tennessee": ("Tennessee Republic", "Tennessee", "TN"),
-                "Texas": ("Texas Republic", "Texas", "TX"),
-                "Utah": ("Utah Republic", "Utah", "UT"),
-                "Vermont": ("Vermont Republic", "Vermont", "VT"),
-                "Virginia": ("Virginia Republic", "Virginia", "VA"),
-                "Washington": ("Washington Republic", "Washington", "WA"),
-                "West Virginia": ("West Virginia Republic", "West Virginia", "WV"),
-                "Wisconsin": ("Wisconsin Republic", "Wisconsin", "WI"),
-                "Wyoming": ("Wyoming Republic", "Wyoming", "WY")
+                "Alabama": ("Alabama Republic", "Alabama", "AL", "Alabama National (Alabaman)"),
+                "Alaska": ("Alaska Republic", "Alaska", "AK", "Alaskan National (Alaskan)"),
+                "Arizona": ("Arizona Republic", "Arizona", "AZ", "Arizona National (Arizonan)"),
+                "Arkansas": ("Arkansas Republic", "Arkansas", "AR", "Arkansas National (Arkansan)"),
+                "California": ("California Republic", "California", "CA", "California National (Californian)"),
+                "Colorado": ("Colorado Republic", "Colorado", "CO", "Colorado National (Coloradan)"),
+                "Connecticut": ("Connecticut Republic", "Connecticut", "CT", "Connecticut National (Connecticuter)"),
+                "Delaware": ("Delaware Republic", "Delaware", "DE", "Delaware National (Delawarian)"),
+                "Florida": ("Florida Republic", "Florida", "FL", "Florida National (Floridian)"),
+                "Georgia": ("Georgia Republic", "Georgia", "GA", "Georgia National (Georgian)"),
+                "Hawaii": ("Hawaii Republic", "Hawaii", "HI", "Hawaii National (Hawaiian)"),
+                "Idaho": ("Idaho Republic", "Idaho", "ID", "Idaho National (Idahoan)"),
+                "Illinois": ("Illinois Republic", "Illinois", "IL", "Illinois National (Illinoisan)"),
+                "Indiana": ("Indiana Republic", "Indiana", "IN", "Indiana National (Hoosier)"),
+                "Iowa": ("Iowa Republic", "Iowa", "IA", "Iowa National (Iowan)"),
+                "Kansas": ("Kansas Republic", "Kansas", "KS", "Kansas National (Kansan)"),
+                "Kentucky": ("Kentucky Republic", "Kentucky", "KY", "Kentucky National (Kentuckian)"),
+                "Louisiana": ("Louisiana Republic", "Louisiana", "LA", "Louisiana National (Louisianan)"),
+                "Maine": ("Maine Republic", "Maine", "ME", "Maine National (Mainer)"),
+                "Maryland": ("Maryland Republic", "Maryland", "MD", "Maryland National (Marylander)"),
+                "Massachusetts": ("Massachusetts Republic", "Massachusetts", "MA", "Massachusetts National (Bay Stater)"),
+                "Michigan": ("Michigan Republic", "Michigan", "MI", "Michigan National (Michigander)"),
+                "Minnesota": ("Minnesota Republic", "Minnesota", "MN", "Minnesota National (Minnesotan)"),
+                "Mississippi": ("Mississippi Republic", "Mississippi", "MS", "Mississippi National (Mississippian)"),
+                "Missouri": ("Missouri Republic", "Missouri", "MO", "Missouri National (Missourian)"),
+                "Montana": ("Montana Republic", "Montana", "MT", "Montana National (Montanan)"),
+                "Nebraska": ("Nebraska Republic", "Nebraska", "NE", "Nebraska National (Nebraskan)"),
+                "Nevada": ("Nevada Republic", "Nevada", "NV", "Nevada National (Nevadan)"),
+                "New Hampshire": ("New Hampshire Republic", "New Hampshire", "NH", "New Hampshire National (New Hampshirite)"),
+                "New Jersey": ("New Jersey Republic", "New Jersey", "NJ", "New Jersey National (New Jerseyan)"),
+                "New Mexico": ("New Mexico Republic", "New Mexico", "NM", "New Mexico National (New Mexican)"),
+                "New York": ("New York Republic", "New York", "NY", "New York National (New Yorker)"),
+                "North Carolina": ("North Carolina Republic", "North Carolina", "NC", "North Carolina National (North Carolinian)"),
+                "North Dakota": ("North Dakota Republic", "North Dakota", "ND", "North Dakota National (North Dakotan)"),
+                "Ohio": ("Ohio Republic", "Ohio", "OH", "Ohio National (Ohioan)"),
+                "Oklahoma": ("Oklahoma Republic", "Oklahoma", "OK", "Oklahoma National (Oklahoman)"),
+                "Oregon": ("Oregon Republic", "Oregon", "OR", "Oregon National (Oregonian)"),
+                "Pennsylvania": ("Pennsylvania Republic", "Pennsylvania", "PA", "Pennsylvania National (Pennsylvanian)"),
+                "Rhode Island": ("Rhode Island Republic", "Rhode Island", "RI", "Rhode Island National (Rhode Islander)"),
+                "South Carolina": ("South Carolina Republic", "South Carolina", "SC", "South Carolina National (South Carolinian)"),
+                "South Dakota": ("South Dakota Republic", "South Dakota", "SD", "South Dakota National (South Dakotan)"),
+                "Tennessee": ("Tennessee Republic", "Tennessee", "TN", "Tennessee National (Tennessean)"),
+                "Texas": ("Texas Republic", "Texas", "TX", "Texas National (Texan)"),
+                "Utah": ("Utah Republic", "Utah", "UT", "Utah National (Utahn)"),
+                "Vermont": ("Vermont Republic", "Vermont", "VT", "Vermont National (Vermonter)"),
+                "Virginia": ("Virginia Republic", "Virginia", "VA", "Virginia National (Virginian)"),
+                "Washington": ("Washington Republic", "Washington", "WA", "Washington National (Washingtonian)"),
+                "West Virginia": ("West Virginia Republic", "West Virginia", "WV", "West Virginia National (West Virginian)"),
+                "Wisconsin": ("Wisconsin Republic", "Wisconsin", "WI", "Wisconsin National (Wisconsinite)"),
+                "Wyoming": ("Wyoming Republic", "Wyoming", "WY", "Wyoming National (Wyomingite)")
             }
-
 
             if isinstance(states, str):
                 # If a single string is passed, convert it to a list
@@ -364,14 +599,17 @@ class PDFGeneratorApp(QMainWindow):
 
             state_dicts = []
             for state in states:
-                state_info = state_abbreviations.get(state, ("", "", ""))
+                state_info = state_abbreviations.get(state, ("", "", "", ""))
                 state_dict = {
                     "Republic Name": state_info[0],
                     "State Name": state_info[1],
-                    "State Abbreviation": state_info[2]
+                    "State Abbreviation": state_info[2],
+                    "Country of Citizenship": state_info[3]
                 }
                 state_dicts.append(state_dict)
             return state_dicts
+        
+        
             #########################################################################################################
             #       END OF generate_state_dicts(states)
             #########################################################################################################
@@ -406,6 +644,10 @@ class PDFGeneratorApp(QMainWindow):
         letter_of_intent_filename = f"01 - {first_given_name} {middle_given_name} {family_name} - Letter of Intent - {timestamp}.docx"
         affidavit_filename = f"02 - {first_given_name} {middle_given_name} {family_name} - Affidavit - {timestamp}.docx"
         supporting_evidence_filename = f"03 - {first_given_name} {middle_given_name} {family_name} - Supporting Evidence - {timestamp}.docx"
+        w_8ben_pdf_filename = f"04 - {first_given_name} {middle_given_name} {family_name} - Supporting Evidence - {timestamp}.pdf"
+        country_of_citizenship = republic_of_birth_list[0]['Country of Citizenship']
+        date_of_birth = self.date_of_birth_text.text()
+        include_ohio_state_edits = self.include_ohio_state_assembly_edits_combo.currentText()
         #########################################################################################################
         # END OF DEFINE VARIABLES
         #########################################################################################################
@@ -438,6 +680,9 @@ class PDFGeneratorApp(QMainWindow):
             self.create_supporting_evidence(supporting_evidence_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county)
             supporting_evidence_document.save(supporting_evidence_file_path)
 
+            # W-8BEN PDF CREATION:
+            w_8ben_pdf_file_path = os.path.join(docx_folder_path, w_8ben_pdf_filename)
+            self.create_w_8ben_pdf(w_8ben_pdf_file_path, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county, country_of_citizenship, date_of_birth, include_ohio_state_edits)
 
     #########################################################################################################
     #                       START OF create_letter_of_intent FUNCTION
@@ -2062,9 +2307,173 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         #               END OF LETTER OF SUPPLEMENTAL INFORMATION
         #########################################################################################################
+
+    def create_w_8ben_pdf(self, w_8ben_pdf_file_path, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county, country_of_citizenship, date_of_birth, include_ohio_state_edits):
+        #########################################################################################################
+        #                       START OF DEFINING VARIABLES
+        #########################################################################################################
+        # Extract the "State Name" from each dictionary
+        soujourn_state_names_list = [state_dict["State Name"] for state_dict in sojourn_states_list]
+        soujourn_state_names = ", ".join(soujourn_state_names_list)
+
+        # Extract the "State Abbreviations" from each dictionary
+        soujourn_state_abbreviations_list = [state_dict["State Abbreviation"] for state_dict in sojourn_states_list]
+        soujourn_state_abbreviations = ", ".join(soujourn_state_abbreviations_list)
+
+        # Extract the "State " from each dictionary
+        soujourn_republic_name_list = [state_dict["Republic Name"] for state_dict in sojourn_states_list]
+        soujourn_republic_names = ", ".join(soujourn_republic_name_list)
+
+        mailing_address_republic_name = mailing_address_state_list[0]['Republic Name']
+        mailing_address_state_name = mailing_address_state_list[0]['State Name']
+        mailing_address_state_abbreviation = mailing_address_state_list[0]['State Abbreviation']
+
+        republic_of_birth_name = republic_of_birth_list[0]['Republic Name']
+        republic_of_birth_state = republic_of_birth_list[0]['State Name']
+        republic_of_birth_state_abbreviation = republic_of_birth_list[0]['State Abbreviation']
+
+        local_irs_service_center_republic_name = local_irs_service_center_state_list[0]['Republic Name']
+        local_irs_service_center_state__name = local_irs_service_center_state_list[0]['State Name']
+        local_irs_service_center_state_abbreviation = local_irs_service_center_state_list[0]['State Abbreviation']
+
+        notary_republic_name = notary_state_list[0]['Republic Name']
+        notary_state_name = notary_state_list[0]['State Name']
+        notary_state_abbrivation = notary_state_list[0]['State Abbreviation']
+
+        vessel_name = first_given_name + ' ' + middle_given_name + ' ' + family_name
+        live_name = first_given_name + '-' + middle_given_name + ': ' + family_name
+
+        # Create variables for titlecased and uppercase versions of the name
+        titlecased_name = vessel_name.title()
+        uppercase_name = vessel_name.upper()
+
+        # Determine the pronouns based on the 'are_you' variable
+        if man_or_woman == 'Man':
+            pronouns = ("he", "his", "him")
+            gender = man_or_woman.lower()
+        elif man_or_woman == 'Woman':
+            pronouns = ("she", "her", "her")
+            gender = man_or_woman.lower()
+
+        # Get the current date in the desired format
+        current_date = datetime.now().strftime("%m-%d-%Y")
+        #########################################################################################################
+        #                       END OF DEFINING VARIABLES
+        #########################################################################################################
+
+        # Get the path to the directory containing your executable
+        app_dir = os.path.dirname(os.path.realpath(__file__))
+
+        if include_ohio_state_edits == 'Yes':
+            # Input PDF file path
+            pdf_input_path = os.path.join(app_dir, 'assets', 'fw8ben_with_ohio_edits.pdf')
+            # Access the form fields on the page
+            field_values = {
+                'f_1[0]': f'{live_name}, beneficiary',                  # Part 1, Field 1: Name of individual who is the beneficial owner 
+                'f_2[0]': f'{country_of_citizenship}',                  # Part 1, Field 2: Country of citizenship
+                'f_3[0]': 'rural free delivery',                        # Part 1, Field 3: Permanent residence address (street, apt. or suite no., or rural route). Do not use a P.O. box or in-care-of address. 
+                'f_4[0]': f'{city}, {mailing_address_state_name}',      # Part 1, Field 3: City or town, state or province. Include postal code where appropriate.
+                'f_5[0]': f'{republic_of_birth_state}',                 # Part 1, Field 3: Country
+                'f_6[0]': f'c/o rr {street_address}',                   # Part 1, Field 4: Mailing address (if different from above)
+                'f_7[0]': f'{city}, {mailing_address_state_name}',      # Part 1, Field 4: City or town, state or province. Include postal code where appropriate.
+                'f_8[0]': f'{republic_of_birth_state}',                 # Part 1, Field 4: Country
+                'f_9[0]': f'{social_security_number}',                  # Part 1, Field 5: U.S. taxpayer identification number (SSN or ITIN), if required (see instructions)
+                'f_10[0]': '',                                          # Part 1, Field 6a: Foreign tax identifying number (see instructions)
+                'c1_01[0]': '/0',                                       # Part 1, Field 6b  (checkbox): Check if FTIN not legally required
+                'f_11[0]': '',                                          # Part 1, Field 7: Reference number(s) (see instructions)
+                'f_12[0]': f'{date_of_birth}',                          # Part 1, Field 8: Date of birth (MM-DD-YYYY) (see instructions)
+                'f_13[0]': 'N/A',                                       # Part 2, Field 9: I certify that the beneficial owner is a resident of...
+                'f_14[0]': 'N/A',                                       # Part 2, Field 10: Special rates and conditions / Article and paragraph
+                'f_15[0]': 'N/A',                                       # Part 2, Field 10: Special rates and conditions / % rate
+                'f_16[0]': 'N/A',                                       # Part 2, Field 10: Special rates and conditions / (specify type of income):
+                'f_17[0]': '',                                          # Part 2, Field 10: Explain the additional conditions in the Article and paragraph the beneficial owner meets to be eligible for the rate of withholding (this is the short line right after the word "withholding:")
+                'f_18[0]': '\t\t\tN/A',                                 # Part 2, Field 10: Explain the additional conditions in the Article and paragraph the beneficial owner meets to be eligible for the rate of withholding (this is the longer line below)
+                'c1_02[0]': '/1',                                       # Part 3, Checkbox: I certify that I have the capacity to sign for the person identified on line 1 of this form.
+                'f_20[0]': '',                                          # Part 3, Signature Line
+                'Date[0]': f'{current_date}',                           # Part 3, Date: Date (MM-DD-YYYY)
+                'f_21[0]': '',                                          # Part 3, Print name of signer
+                'Text1': 'Non-Resident Alien',                          # Part 1, Identification of "Non-Resident Alien"
+                'Text2': 'Non-Resident Alien',                          # Part 1, Name of individual who is the "Non-Resident Alien"
+                'Text3': '  domicile',                                    # Part 1, Permanent "domicile" address
+                'Text4': 'Speical\n\nPrivate\n\nand\n\nPriority',                # Margin text, "Speical Private and Priority"
+                'Text5': 'non-resident alien owner',                    # Part 2, Field 9: "non-resident alien owner"
+                'Text6': 'non-resident alien owner',                    # Part 3, "non-resident alient owner"
+                'Text7': '© All Right Reserved 28 U.S.C. § 1746(1)',    # Signature line "© All Right Reserved 28 U.S.C. § 1746(1)"
+                'Text8': 'non-resident alient owner',                   # Below signature line "non-resident alient owner"
+                'Text9': 'non-resident alient owner',                   # Below signature line (or individual authorized to sign for "non-resident alient owner")
+                'Text10': 'In Exclusive Equity',                        # Print name of signer
+            }
+        else:
+            # Input PDF file path
+            pdf_input_path = os.path.join(app_dir, 'assets', 'fw8ben.pdf')
+            # Access the form fields on the page
+            field_values = {
+                'f_1[0]': f'{live_name}, beneficiary',                  # Part 1, Field 1: Name of individual who is the beneficial owner 
+                'f_2[0]': f'{country_of_citizenship}',                  # Part 1, Field 2: Country of citizenship
+                'f_3[0]': 'rural free delivery',                        # Part 1, Field 3: Permanent residence address (street, apt. or suite no., or rural route). Do not use a P.O. box or in-care-of address. 
+                'f_4[0]': f'{city}, {mailing_address_state_name}',      # Part 1, Field 3: City or town, state or province. Include postal code where appropriate.
+                'f_5[0]': f'{republic_of_birth_state}',                 # Part 1, Field 3: Country
+                'f_6[0]': f'c/o rr {street_address}',                   # Part 1, Field 4: Mailing address (if different from above)
+                'f_7[0]': f'{city}, {mailing_address_state_name}',      # Part 1, Field 4: City or town, state or province. Include postal code where appropriate.
+                'f_8[0]': f'{republic_of_birth_state}',                 # Part 1, Field 4: Country
+                'f_9[0]': f'{social_security_number}',                  # Part 1, Field 5: U.S. taxpayer identification number (SSN or ITIN), if required (see instructions)
+                'f_10[0]': '',                                          # Part 1, Field 6a: Foreign tax identifying number (see instructions)
+                'c1_01[0]': '/0',                                       # Part 1, Field 6b  (checkbox): Check if FTIN not legally required
+                'f_11[0]': '',                                          # Part 1, Field 7: Reference number(s) (see instructions)
+                'f_12[0]': f'{date_of_birth}',                          # Part 1, Field 8: Date of birth (MM-DD-YYYY) (see instructions)
+                'f_13[0]': 'N/A',                                       # Part 2, Field 9: I certify that the beneficial owner is a resident of...
+                'f_14[0]': 'N/A',                                       # Part 2, Field 10: Special rates and conditions / Article and paragraph
+                'f_15[0]': 'N/A',                                       # Part 2, Field 10: Special rates and conditions / % rate
+                'f_16[0]': 'N/A',                                       # Part 2, Field 10: Special rates and conditions / (specify type of income):
+                'f_17[0]': '',                                          # Part 2, Field 10: Explain the additional conditions in the Article and paragraph the beneficial owner meets to be eligible for the rate of withholding (this is the short line right after the word "withholding:")
+                'f_18[0]': '\t\t\tN/A',                                 # Part 2, Field 10: Explain the additional conditions in the Article and paragraph the beneficial owner meets to be eligible for the rate of withholding (this is the longer line below)
+                'c1_02[0]': '/1',                                       # Part 3, Checkbox: I certify that I have the capacity to sign for the person identified on line 1 of this form.
+                'f_20[0]': '',                                          # Part 3, Signature Line
+                'Date[0]': f'{current_date}',                           # Part 3, Date: Date (MM-DD-YYYY)
+                'f_21[0]': '',                                          # Part 3, Print name of signer
+            }
+
+
+        # Create a PdfFileWriter to write the updated PDF
+        pdf_writer = PyPDF2.PdfWriter()
+
+        # List to store form field names
+        field_names = []
+
+        # Open the input PDF file in read-binary mode
+        with open(pdf_input_path, 'rb') as pdf_file:
+            pdf_reader = PyPDF2.PdfReader(pdf_file)
+
+            # Check if the PDF has form fields
+            if pdf_reader.is_encrypted:
+                pdf_reader.decrypt("")  # If the PDF is encrypted, provide a password here
+
+            # Extract form field names
+            if '/AcroForm' in pdf_reader.trailer:
+                acro_form = pdf_reader.trailer['/AcroForm']
+                for field in acro_form['/Fields']:
+                    field_names.append(field['/T'])
+
+            # Now you have a list of form field names
+            print("Form Field Names:", field_names)
+
+            # Access the first page of the PDF (modify the page index as needed)
+            page = pdf_reader.pages[0]
+
+
+            # Update the form field values
+            pdf_writer.update_page_form_field_values(page, field_values)
+            pdf_writer.add_page(page)
+
+        # Save the updated PDF to the output file
+        with open(w_8ben_pdf_file_path, 'wb') as output_pdf:
+            pdf_writer.write(output_pdf)
+
+
     #########################################################################################################
     #                       END OF create_supporting_evidence FUNCTION
     #########################################################################################################
+
 
 def main():
     app = QApplication(sys.argv)

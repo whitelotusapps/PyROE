@@ -1,0 +1,10 @@
+# Ignore the entire 'assets' folder
+assets/*
+
+# Allow specific files within the 'assets' folder
+!assets/fw8ben.pdf
+!assets/fw8ben_with_ohio_edits.pdf
+
+# Ignore the entire 'versions' folder
+versions/
+testing/

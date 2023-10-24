@@ -2,8 +2,8 @@ name: Build Cross-Platform Binaries
 
 on:
   push:
-    branches:
-      - main  # Trigger the workflow on pushes to the main branch
+    tags:
+      - '*'
 
 jobs:
   build:

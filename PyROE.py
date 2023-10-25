@@ -1,24 +1,19 @@
-import sys
 import os
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenuBar, QAction, QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QFileDialog, QComboBox, QListWidget, QTabWidget
-from PyQt5.QtGui import QFont
-from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, PageTemplate, PageBreak, Paragraph, Table, ListFlowable, ListItem
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib import colors
-from reportlab.platypus.tables import TableStyle
-from reportlab.lib.units import inch
-from reportlab.platypus import Spacer
+import sys
 from datetime import datetime
+
+import PyPDF2
 from docx import Document
-from docx.shared import Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH  # Import WD_ALIGN_PARAGRAPH
 from docx.enum.style import WD_STYLE_TYPE  # Import WD_STYLE_TYPE
 from docx.enum.table import WD_ALIGN_VERTICAL
+from docx.enum.text import WD_ALIGN_PARAGRAPH  # Import WD_ALIGN_PARAGRAPH
 from docx.enum.text import WD_BREAK
-from docx.oxml.ns import qn
-import PyPDF2
-
+from docx.shared import Pt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import (QAction, QApplication, QComboBox, QFileDialog,
+                             QLabel, QLineEdit, QListWidget, QMainWindow,
+                             QPushButton, QTabWidget, QVBoxLayout,
+                             QWidget)
 class PDFGeneratorApp(QMainWindow):
     def __init__(self):
         super().__init__()

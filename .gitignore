@@ -8,3 +8,6 @@ assets/*
 # Ignore the entire 'versions' folder
 versions/
 testing/
+build/
+dist/
+PyROE.spec

@@ -33,7 +33,7 @@ jobs:
         run: pip install -r requirements.txt  # Adjust as needed
 
       - name: Build Binary
-        run: pyinstaller --onefile --add-data "assets;assets" PyROE.py
+        run: pyinstaller --onefile --add-data "assets:assets" PyROE.py
 
       - name: Upload Binary
         uses: actions/upload-artifact@v3

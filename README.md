@@ -26,6 +26,12 @@ These documents include:
 
 [![Video](https://img.youtube.com/vi/b36kzEt43gU/0.jpg)](https://www.youtube.com/watch?v=b36kzEt43gU)
 
+# W-8BEN inspiration
+The W-8BEN section was introduced in v0.2 of this software and was inspired by the below information. Again, this is for educational purposes only:
+
+[![Video](https://img.youtube.com/vi/PZ0hx73PSVg/0.jpg)](https://youtu.be/PZ0hx73PSVg)
+
+# Inspiration
 The inspiration for this came from:
 
 [Letter of Intent](https://www.studocu.com/en-us/u/43384403?sid=01695328459)

@@ -3,6 +3,7 @@
 ![GitHub release (by tag)](https://img.shields.io/github/downloads/whitelotusapps/PyROE/v0.1/total)
 ![GitHub release (by tag)](https://img.shields.io/github/downloads/whitelotusapps/PyROE/v0.2/total)
 ![GitHub release (by tag)](https://img.shields.io/github/downloads/whitelotusapps/PyROE/v0.3/total)
+![GitHub release (by tag)](https://img.shields.io/github/downloads/whitelotusapps/PyROE/v0.4/total)
 
 # PyROE
 PyROE is an EDUCATIONAL USE ONLY application.

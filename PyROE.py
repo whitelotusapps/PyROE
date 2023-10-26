@@ -9,11 +9,12 @@ from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.enum.text import WD_ALIGN_PARAGRAPH  # Import WD_ALIGN_PARAGRAPH
 from docx.enum.text import WD_BREAK
 from docx.shared import Pt
-from PyQt5.QtGui import QFont
+from docx.shared import Inches
+from PyQt5.QtGui import (QFont, QFontDatabase)
 from PyQt5.QtWidgets import (QAction, QApplication, QComboBox, QFileDialog,
                              QLabel, QLineEdit, QListWidget, QMainWindow,
                              QPushButton, QTabWidget, QVBoxLayout,
-                             QWidget)
+                             QWidget, QListWidgetItem, QStyledItemDelegate)
 class PDFGeneratorApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -32,7 +33,7 @@ class PDFGeneratorApp(QMainWindow):
         layout = QVBoxLayout(self.central_widget)
         
         # WE SET THIS TO True FOR TESTING, SET IT TO False FOR PRODUCTION
-        TESTING = False
+        TESTING = True
 
         PyROE_Version = 'v0.3'
 
@@ -452,6 +453,61 @@ class PDFGeneratorApp(QMainWindow):
         tab5.setLayout(tab5.layout)
         tab_widget.addTab(tab5, "W-8BEN PDF Info")
 
+
+        #########################################################################################################
+        # Tab 6: Document Settings
+        #########################################################################################################
+        tab6 = QWidget()
+        tab6.layout = QVBoxLayout()
+
+        # Create a custom widget to display the font list
+        self.font_list_widget = QListWidget()
+        
+        # Get a list of font families from QFontDatabase
+        font_families = QFontDatabase().families()
+
+        # Populate the font list widget with font names styled using QFont
+        for font_family in font_families:
+            item = QListWidgetItem(font_family)
+            item.setFont(QFont(font_family))
+            self.font_list_widget.addItem(item)
+
+        # Create a QComboBox
+        self.combo_font_list = QComboBox()
+
+        # Set the font list widget as the drop-down widget for the QComboBox
+        self.combo_font_list.setModel(self.font_list_widget.model())
+        self.combo_font_list.setView(self.font_list_widget)
+
+        # Add the font size labels and drop-down menus
+        self.font_family_label = QLabel('Select which font to use')
+        self.header_font_size_label = QLabel('Header font size:')
+        self.main_body_font_size_label = QLabel('Main body text font size:')
+
+        self.combo_header_font_size = QComboBox()
+        self.combo_main_body_font_size = QComboBox()
+
+        # Populate the font size drop-down menus with available font sizes
+        font_sizes = [10, 12, 14, 16, 18, 20]  # Add more sizes if needed
+        self.combo_header_font_size.addItems([str(size) for size in font_sizes])
+        self.combo_main_body_font_size.addItems([str(size) for size in font_sizes])
+
+        # SET DEFAULT DOCUMENT VALUES
+        self.combo_font_list.setCurrentText('Times New Roman')
+        self.combo_header_font_size.setCurrentText('16')
+        self.combo_main_body_font_size.setCurrentText('12')
+
+        # Add the labels and drop-down menus to the layout
+        tab6.layout.addWidget(self.font_family_label)
+        tab6.layout.addWidget(self.combo_font_list)
+        tab6.layout.addWidget(self.header_font_size_label)
+        tab6.layout.addWidget(self.combo_header_font_size)
+        tab6.layout.addWidget(self.main_body_font_size_label)
+        tab6.layout.addWidget(self.combo_main_body_font_size)
+
+        tab6.setLayout(tab6.layout)
+        tab_widget.addTab(tab6, "Document Settings")
+
         #########################################################################################################
         #                       END OF CREATING TABS / TAB LAYOUT
         #########################################################################################################
@@ -664,32 +720,49 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         # START OF DEFINE VARIABLES
         #########################################################################################################
+        
+        # PERSONAL INFO VARIABLES
         first_given_name = self.first_given_name_text.text()
         middle_given_name = self.middle_given_name_text.text()
         family_name = self.family_name_text.text()
         man_or_woman = self.man_or_woman.currentText()
+        social_security_number = self.social_security_number_text.text()
+        date_of_birth = self.date_of_birth_text.text()
+        republic_of_birth_list = generate_state_dicts(self.republic_of_birth.currentText())
+
+        # ADDRESS INFO VARIABLES
         street_address = self.street_address_text.text()
+        mailing_address_state_list = generate_state_dicts(self.mailing_state_combo.currentText())
         city = self.city_text.text()
         zip_code = self.zip_text.text()
-        social_security_number = self.social_security_number_text.text()
+
+        # IRS VARIABLES
         irs_commissioner = self.irs_commissioner_text.text()
         local_irs_service_center_street_address = self.local_irs_service_center_street_address_text.text()
         local_irs_service_center_city = self.local_irs_service_center_city_text.text()
-        local_irs_service_center_zip = self.local_irs_service_center_zip_text.text()
-        notary_county = self.notary_county_text.text()
-        sojourn_states_list = generate_state_dicts([item.text() for item in self.states_list.selectedItems()])
-        mailing_address_state_list = generate_state_dicts(self.mailing_state_combo.currentText())
-        republic_of_birth_list = generate_state_dicts(self.republic_of_birth.currentText())
-        notary_state_list = generate_state_dicts(self.notary_state_combo.currentText())
         local_irs_service_center_state_list = generate_state_dicts(self.local_irs_service_center_state_combo.currentText())
-        timestamp = datetime.now().strftime("%H_%M_%S")
+        local_irs_service_center_zip = self.local_irs_service_center_zip_text.text()
+
+        # NOTARY VARIABLES        
+        notary_county = self.notary_county_text.text()
+        notary_state_list = generate_state_dicts(self.notary_state_combo.currentText())
+
+        # MISC VARIABLES
+        sojourn_states_list = generate_state_dicts([item.text() for item in self.states_list.selectedItems()])
+        country_of_citizenship = republic_of_birth_list[0]['Country of Citizenship']
+        include_ohio_state_edits = self.include_ohio_state_assembly_edits_combo.currentText()
+        timestamp = datetime.now().strftime("%H_%M_%S")        
+        
+        # DOCUMENT FONT VARIABLES
+        header_font_size = int(self.combo_header_font_size.currentText())
+        body_text_font_size = int(self.combo_main_body_font_size.currentText())
+        font_family = self.combo_font_list.currentText()
+
+        # DOCUMENT FILE NAMES
         letter_of_intent_filename = f"01 - {first_given_name} {middle_given_name} {family_name} - Letter of Intent - {timestamp}.docx"
         affidavit_filename = f"02 - {first_given_name} {middle_given_name} {family_name} - Affidavit - {timestamp}.docx"
         supporting_evidence_filename = f"03 - {first_given_name} {middle_given_name} {family_name} - Supporting Evidence - {timestamp}.docx"
         w_8ben_pdf_filename = f"04 - {first_given_name} {middle_given_name} {family_name} - Supporting Evidence - {timestamp}.pdf"
-        country_of_citizenship = republic_of_birth_list[0]['Country of Citizenship']
-        date_of_birth = self.date_of_birth_text.text()
-        include_ohio_state_edits = self.include_ohio_state_assembly_edits_combo.currentText()
         #########################################################################################################
         # END OF DEFINE VARIABLES
         #########################################################################################################
@@ -707,19 +780,19 @@ class PDFGeneratorApp(QMainWindow):
             # LETTER OF INTENT:
             letter_of_intent_file_path = os.path.join(docx_folder_path, letter_of_intent_filename)
             letter_of_intent_document = Document()
-            self.create_letter_of_intent(letter_of_intent_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, mailing_address_state_list)
+            self.create_letter_of_intent(letter_of_intent_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, mailing_address_state_list, header_font_size, body_text_font_size, font_family)
             letter_of_intent_document.save(letter_of_intent_file_path)
             
             # AFFIDAVIT:
             affidavit_file_path = os.path.join(docx_folder_path, affidavit_filename)
             affidavit_document = Document()
-            self.create_affidavit(affidavit_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county)
+            self.create_affidavit(affidavit_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county, header_font_size, body_text_font_size, font_family)
             affidavit_document.save(affidavit_file_path)
             
             # SUPPORTING EVIDENCE:
             supporting_evidence_file_path = os.path.join(docx_folder_path, supporting_evidence_filename)
             supporting_evidence_document = Document()
-            self.create_supporting_evidence(supporting_evidence_document, first_given_name, middle_given_name, family_name, man_or_woman, sojourn_states_list)
+            self.create_supporting_evidence(supporting_evidence_document, first_given_name, middle_given_name, family_name, man_or_woman, sojourn_states_list, header_font_size, body_text_font_size, font_family)
             supporting_evidence_document.save(supporting_evidence_file_path)
 
             # W-8BEN PDF CREATION:
@@ -729,7 +802,7 @@ class PDFGeneratorApp(QMainWindow):
     #########################################################################################################
     #                       START OF create_letter_of_intent FUNCTION
     #########################################################################################################
-    def create_letter_of_intent(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, mailing_address_state_list):
+    def create_letter_of_intent(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, mailing_address_state_list, header_font_size, body_text_font_size, font_family):
 
         #########################################################################################################
         #                       START OF DEFINING VARIABLES
@@ -764,7 +837,8 @@ class PDFGeneratorApp(QMainWindow):
         header_run = header_paragraph.add_run(header_text)
         
         # HEADER FONT SIZE
-        header_run.font.size = Pt(12)
+        header_run.font.size = Pt(header_font_size)
+        header_run.font.name = font_family
         header_run.bold = True
         header_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         header_paragraph.space_after = Pt(12)  # Adjust the spacing as needed
@@ -777,24 +851,28 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         # Create a custom style for normal document body text with a custom leading (line spacing)
         normal_style = docx_document.styles['Normal']
-        normal_style.font.size = Pt(10)
+        normal_style.font.size = Pt(body_text_font_size)
+        normal_style.font.name = font_family
         normal_style.paragraph_format.space_after = Pt(0)
 
         # Define a custom style with a left indent of 36 points
         indent_list_level_1 = docx_document.styles.add_style('IndentListLevel1', WD_STYLE_TYPE.PARAGRAPH)
-        indent_list_level_1.font.size = Pt(10)
+        indent_list_level_1.font.size = Pt(body_text_font_size)
+        indent_list_level_1.font.name = font_family
         indent_list_level_1.paragraph_format.space_after = Pt(0)
         indent_list_level_1.paragraph_format.left_indent = Pt(36)
 
         # Define a custom style with a left indent of 44 points
         indent_list_level_2 = docx_document.styles.add_style('IndentListLevel2', WD_STYLE_TYPE.PARAGRAPH)
-        indent_list_level_2.font.size = Pt(10)
+        indent_list_level_2.font.size = Pt(body_text_font_size)
+        indent_list_level_2.font.name = font_family
         indent_list_level_2.paragraph_format.space_after = Pt(0)
         indent_list_level_2.paragraph_format.left_indent = Pt(44)
 
         # Create a custom style for centered text
         centered_style = docx_document.styles.add_style('Centered', WD_STYLE_TYPE.PARAGRAPH)
-        centered_style.font.size = Pt(10)
+        centered_style.font.size = Pt(body_text_font_size)
+        centered_style.font.name = font_family
         centered_style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
         centered_style.paragraph_format.space_after = Pt(0)
         #########################################################################################################
@@ -819,7 +897,7 @@ class PDFGeneratorApp(QMainWindow):
                 cell.vertical_alignment = WD_ALIGN_VERTICAL.CENTER
                 for paragraph in cell.paragraphs:
                     for run in paragraph.runs:
-                        run.font.size = Pt(10)
+                        run.font.size = Pt(body_text_font_size)
                         cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
         
         table.cell(0, 0).text = titlecased_name
@@ -838,8 +916,8 @@ class PDFGeneratorApp(QMainWindow):
         # Apply italic formatting to the italicized run
         italic_run.italic = True
         # Set the font size for both runs (adjust as needed)
-        normal_run.font.size = Pt(10)
-        italic_run.font.size = Pt(10)
+        normal_run.font.size = Pt(body_text_font_size)
+        italic_run.font.size = Pt(body_text_font_size)
         table.cell(4, 0).text = "USA [near " + zip_code + "]"
         table.cell(4, 1).text = "vessel, securitized negotiable instrument"
         table.autofit = False
@@ -850,13 +928,8 @@ class PDFGeneratorApp(QMainWindow):
         #               END OF CREATING TABLE FOR LETTER OF INTENT
         #########################################################################################################
 
-        # Add a spacer (blank line) to create a new line
         docx_document.add_paragraph()
-
-        # Add the current date
         docx_document.add_paragraph(f'Date: {current_date}', style=normal_style)
-
-        # Add a spacer (blank line) to create a new line
         docx_document.add_paragraph()
 
         #########################################################################################################
@@ -869,7 +942,6 @@ class PDFGeneratorApp(QMainWindow):
         docx_document.add_paragraph('1111 Constitution Avenue NW', style=normal_style)
         docx_document.add_paragraph('Washington, DC 20224', style=normal_style)
 
-        # Add a spacer (blank line) to create a new line
         docx_document.add_paragraph()
 
         # Add local IRS service center information
@@ -1041,6 +1113,29 @@ class PDFGeneratorApp(QMainWindow):
         #               END BULLET POINTS FOR ATTACHMENT SECTION
         #########################################################################################################
 
+        # Set page margins (1 inch on all sides)
+        sections = docx_document.sections
+        for section in sections:
+            section.left_margin = Inches(1)
+            section.right_margin = Inches(1)
+            section.top_margin = Inches(1)
+            section.bottom_margin = Inches(1)
+        
+            # Access the header and footer for the section
+            header = section.header
+            footer = section.footer
+
+            # Adjust header and footer margins
+            header.left_margin = Inches(1) 
+            header.right_margin = Inches(1)
+            header.top_margin = Inches(1)
+            header.bottom_margin = Inches(1)
+
+            footer.left_margin = Inches(1)
+            footer.right_margin = Inches(1)
+            footer.top_margin = Inches(1)
+            footer.bottom_margin = Inches(1)
+
         #########################################################################################################
         #               END OF LETTER OF INTENT
         #########################################################################################################
@@ -1053,7 +1148,7 @@ class PDFGeneratorApp(QMainWindow):
     #########################################################################################################
     #                       START OF create_affidavit FUNCTION
     #########################################################################################################
-    def create_affidavit(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county):
+    def create_affidavit(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county, header_font_size, body_text_font_size, font_family):
 
         #########################################################################################################
         #                       START OF format_paragraph_keywords FUNCTION
@@ -1138,10 +1233,12 @@ class PDFGeneratorApp(QMainWindow):
         header_paragraph = header.paragraphs[0]
         header_run = header_paragraph.add_run(header_text)
         # Adjust the font size (e.g., set it to 16 points)
-        header_run.font.size = Pt(12)
+        header_run.font.size = Pt(header_font_size)
+        header_run.font.name = font_family
         header_run.bold = True
         header_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         header_paragraph.space_after = Pt(12)  # Adjust the spacing as needed
+
         #########################################################################################################
         #               END OF CREATING HEADER
         #########################################################################################################
@@ -1152,25 +1249,29 @@ class PDFGeneratorApp(QMainWindow):
 
         # Create a custom style for normal text with a custom leading (line spacing)
         normal_style = docx_document.styles['Normal']
-        normal_style.font.size = Pt(10)
+        normal_style.font.size = Pt(body_text_font_size)
+        normal_style.font.name = font_family
         normal_style.paragraph_format.space_after = Pt(0)
 
         # Define a custom style with a left indent of 36 points
         indent_list_level_1 = docx_document.styles.add_style('IndentListLevel1', WD_STYLE_TYPE.PARAGRAPH)
-        indent_list_level_1.font.size = Pt(10)
+        indent_list_level_1.font.size = Pt(body_text_font_size)
+        indent_list_level_1.font.name = font_family
         indent_list_level_1.paragraph_format.space_after = Pt(0)
         indent_list_level_1.paragraph_format.left_indent = Pt(36)
 
         # Define a custom style with a left indent of 44 points
         indent_list_level_2 = docx_document.styles.add_style('IndentListLevel2', WD_STYLE_TYPE.PARAGRAPH)
-        indent_list_level_2.font.size = Pt(10)
+        indent_list_level_2.font.size = Pt(body_text_font_size)
+        indent_list_level_2.font.name = font_family
         indent_list_level_2.paragraph_format.space_after = Pt(0)
         indent_list_level_2.paragraph_format.left_indent = Pt(44)
 
 
         # Create a custom style for centered text
         centered_style = docx_document.styles.add_style('Centered', WD_STYLE_TYPE.PARAGRAPH)
-        centered_style.font.size = Pt(10)
+        centered_style.font.size = Pt(body_text_font_size)
+        centered_style.font.name = font_family
         centered_style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
         centered_style.paragraph_format.space_after = Pt(0)
         #########################################################################################################
@@ -1451,6 +1552,29 @@ class PDFGeneratorApp(QMainWindow):
         #               END OF LETTER OF AFFIDAVIT
         #########################################################################################################
 
+        # Set page margins (1 inch on all sides)
+        sections = docx_document.sections
+        for section in sections:
+            section.left_margin = Inches(1)
+            section.right_margin = Inches(1)
+            section.top_margin = Inches(1)
+            section.bottom_margin = Inches(1)
+        
+            # Access the header and footer for the section
+            header = section.header
+            footer = section.footer
+
+            # Adjust header and footer margins
+            header.left_margin = Inches(1)
+            header.right_margin = Inches(1)
+            header.top_margin = Inches(1)
+            header.bottom_margin = Inches(1)
+
+            footer.left_margin = Inches(1)
+            footer.right_margin = Inches(1)
+            footer.top_margin = Inches(1)
+            footer.bottom_margin = Inches(1)
+
     #########################################################################################################
     #                       END OF create_affidavit FUNCTION
     #########################################################################################################
@@ -1459,7 +1583,7 @@ class PDFGeneratorApp(QMainWindow):
     #########################################################################################################
     #                       START OF create_supporting_evidence FUNCTION
     #########################################################################################################
-    def create_supporting_evidence(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, sojourn_states_list):
+    def create_supporting_evidence(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, sojourn_states_list, header_font_size, body_text_font_size, font_family):
         
         #########################################################################################################
         #                       START OF format_paragraph_keywords FUNCTION
@@ -1538,8 +1662,9 @@ class PDFGeneratorApp(QMainWindow):
         header_text = f"Revocation of Election for {titlecased_name}"
         header_paragraph = header.paragraphs[0]
         header_run = header_paragraph.add_run(header_text)
-        # Adjust the font size (e.g., set it to 16 points)
-        header_run.font.size = Pt(12)
+
+        header_run.font.size = Pt(header_font_size)
+        header_run.font.name = font_family
         header_run.bold = True
         header_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
         header_paragraph.space_after = Pt(12)  # Adjust the spacing as needed
@@ -1553,25 +1678,28 @@ class PDFGeneratorApp(QMainWindow):
 
         # Create a custom style for normal text with a custom leading (line spacing)
         normal_style = docx_document.styles['Normal']
-        normal_style.font.size = Pt(10)
+        normal_style.font.size = Pt(body_text_font_size)
+        normal_style.font.name = font_family
         normal_style.paragraph_format.space_after = Pt(0)
-
 
         # Define a custom style with a left indent of 36 points
         indent_list_level_1 = docx_document.styles.add_style('IndentListLevel1', WD_STYLE_TYPE.PARAGRAPH)
-        indent_list_level_1.font.size = Pt(10)
+        indent_list_level_1.font.size = Pt(body_text_font_size)
+        indent_list_level_1.font.name = font_family
         indent_list_level_1.paragraph_format.space_after = Pt(0)
         indent_list_level_1.paragraph_format.left_indent = Pt(36)
 
         # Define a custom style with a left indent of 44 points
         indent_list_level_2 = docx_document.styles.add_style('IndentListLevel2', WD_STYLE_TYPE.PARAGRAPH)
-        indent_list_level_2.font.size = Pt(10)
-        indent_list_level_2.paragraph_format.space_after = Pt(0)
+        indent_list_level_2.font.size = Pt(body_text_font_size)
+        indent_list_level_2.font.name = font_family
+        indent_list_level_2.paragraph_format.space_after = Pt(body_text_font_size)
         indent_list_level_2.paragraph_format.left_indent = Pt(44)
 
         # Create a custom style for centered text
         centered_style = docx_document.styles.add_style('Centered', WD_STYLE_TYPE.PARAGRAPH)
-        centered_style.font.size = Pt(10)
+        centered_style.font.size = Pt(body_text_font_size)
+        centered_style.font.name = font_family
         centered_style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
         centered_style.paragraph_format.space_after = Pt(0)
         #########################################################################################################
@@ -2252,6 +2380,31 @@ class PDFGeneratorApp(QMainWindow):
         paragraph = docx_document.add_paragraph(f"“The U.S. Supreme Court affirms that no one can “elect” [choose] to be treated as a resident of a particular place [Federal location] for the purpose of taxation without also having a factual presence [living] in that location.” Texas v. Florida,  306 U.S. 398 (1939).", style=indent_list_level_2)
         format_paragraph_keywords(paragraph, ["“The U.S. Supreme Court affirms that no one can “elect” [choose] to be treated as a resident of a particular place [Federal location] for the purpose of taxation without also having a factual presence [living] in that location.” Texas v. Florida"], ["italic"])
         docx_document.add_paragraph()
+        
+        # Set page margins (1 inch on all sides)
+        sections = docx_document.sections
+        for section in sections:
+            section.left_margin = Inches(1)
+            section.right_margin = Inches(1)
+            section.top_margin = Inches(1)
+            section.bottom_margin = Inches(1)
+        
+            # Access the header and footer for the section
+            header = section.header
+            footer = section.footer
+
+            # Adjust header and footer margins
+            header.left_margin = Inches(1)
+            header.right_margin = Inches(1)
+            header.top_margin = Inches(1)
+            header.bottom_margin = Inches(1)
+
+            footer.left_margin = Inches(1)
+            footer.right_margin = Inches(1)
+            footer.top_margin = Inches(1)
+            footer.bottom_margin = Inches(1)
+
+
         #########################################################################################################
         #               END OF LETTER OF SUPPLEMENTAL INFORMATION
         #########################################################################################################

@@ -31,6 +31,11 @@ class PDFGeneratorApp(QMainWindow):
         self.setCentralWidget(self.central_widget)
         layout = QVBoxLayout(self.central_widget)
         
+        # WE SET THIS TO True FOR TESTING, SET IT TO False FOR PRODUCTION
+        TESTING = False
+
+        PyROE_Version = 'v0.3'
+
         #########################################################################################################
         # SET GLOBAL FONT SIZE FOR APP UI
         #########################################################################################################
@@ -155,6 +160,22 @@ class PDFGeneratorApp(QMainWindow):
         tab1.layout.addWidget(self.republic_of_birth_label)
         tab1.layout.addWidget(self.republic_of_birth)
 
+        #########################################################################################################
+        # TESTING VALUES
+        #########################################################################################################
+        if TESTING is True:
+            self.first_given_name_text.setText("John")
+            self.middle_given_name_text.setText("Doe")
+            self.family_name_text.setText("Smith")
+            self.street_address_text.setText("123 Main St")
+            self.city_text.setText("Anytown")
+            self.zip_text.setText("12345")
+            self.social_security_number_text.setText("123-45-6789")
+            self.mailing_state_combo.setCurrentText("California")
+            self.man_or_woman.setCurrentText("Man")
+            self.republic_of_birth.setCurrentText("New York")
+        #########################################################################################################
+
         tab1.setLayout(tab1.layout)
         tab_widget.addTab(tab1, "Personal Information")
 
@@ -179,6 +200,17 @@ class PDFGeneratorApp(QMainWindow):
             "West Virginia", "Wisconsin", "Wyoming"
         ])
         
+
+        #########################################################################################################
+        # TESTING VALUES
+        #########################################################################################################
+        if TESTING is True:
+            selected_states = ["California", "New York", "Texas"]
+            for i in range(self.states_list.count()):
+                item = self.states_list.item(i)
+                if item.text() in selected_states:
+                    item.setSelected(True)
+        #########################################################################################################
         
         tab2.layout.addWidget(self.states_label)
         tab2.layout.addWidget(self.states_list)
@@ -212,7 +244,18 @@ class PDFGeneratorApp(QMainWindow):
         ])
         self.local_irs_service_center_zip_label = QLabel('Your local IRS service center zip code:')
         self.local_irs_service_center_zip_text = QLineEdit()
-        
+
+        #########################################################################################################
+        # TESTING VALUES
+        #########################################################################################################
+        if TESTING is True:
+            self.irs_commissioner_text.setText("Daniel Werfel")
+            self.local_irs_service_center_street_address_text.setText("123 IRS Center St")
+            self.local_irs_service_center_city_text.setText("IRS City")
+            self.local_irs_service_center_zip_text.setText("54321")
+            self.local_irs_service_center_state_combo.setCurrentText("California")
+        #########################################################################################################
+
         tab3.layout.addWidget(self.irs_commissioner_label)
         tab3.layout.addWidget(self.irs_commissioner_text)
         tab3.layout.addWidget(self.local_irs_service_center_street_address_label)
@@ -249,6 +292,14 @@ class PDFGeneratorApp(QMainWindow):
 
         self.notary_county_label = QLabel('County where affidavit is notarized:')
         self.notary_county_text = QLineEdit()
+
+        #########################################################################################################
+        # TESTING VALUES
+        #########################################################################################################
+        if TESTING is True:
+            self.notary_state_combo.setCurrentText("California")
+            self.notary_county_text.setText("Example County")
+        #########################################################################################################
 
         tab4.layout.addWidget(self.notary_state_label)
         tab4.layout.addWidget(self.notary_state_combo)
@@ -356,9 +407,6 @@ class PDFGeneratorApp(QMainWindow):
         tab5.layout.addWidget(self.date_of_birth_label)
         tab5.layout.addWidget(self.date_of_birth_text)
 
-        # Connect the first question's combobox to a slot
-        self.include_ohio_state_assembly_edits_combo.currentIndexChanged.connect(self.toggleCustomizeText)
-
         # Initially hide the second question
         self.customize_ohio_state_assembly_text_label.hide()
         self.customize_ohio_state_assembly_text_combo.hide()
@@ -393,9 +441,13 @@ class PDFGeneratorApp(QMainWindow):
         self.custom_ohio_state_assembly_text10_label.hide()
         self.custom_ohio_state_assembly_text10_text.hide()
 
+        self.prev_include_ohio_selection = ""
 
-        # Connect the first question's combobox to a slot
-        self.customize_ohio_state_assembly_text_combo.currentIndexChanged.connect(self.toggleCustomizeTextOptions)
+        # Would you like to adjust your W-8BEN to include Ohio State Assembly Edits?
+        self.include_ohio_state_assembly_edits_combo.currentIndexChanged.connect(self.toggleIncludeCustomOhioStateEdits)
+
+        # Would you like to customize any of the Ohio State Assembly Edit text?'
+        self.customize_ohio_state_assembly_text_combo.currentIndexChanged.connect(self.toggleShowOhioStateEditFields)
 
         tab5.setLayout(tab5.layout)
         tab_widget.addTab(tab5, "W-8BEN PDF Info")
@@ -414,19 +466,24 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         #                       START OF SCREEN SIZE DETECTION (to center the app on the screen)
         #########################################################################################################
-        self.setWindowTitle('PyROE v0.2')
+        self.setWindowTitle(f'PyROE {PyROE_Version}')
         self.showMaximized()
         #########################################################################################################
         #                       END OF SCREEN SIZE DETECTION (to center the app on the screen)
         #########################################################################################################
 
-    def toggleCustomizeText(self, index):
+    def toggleIncludeCustomOhioStateEdits(self, index):
+        # Check if the previous selection was "Yes" and the current selection is "No"
+        if self.prev_include_ohio_selection == "Yes" and self.include_ohio_state_assembly_edits_combo.currentText() == "No":
+            # Reset the value of customize_ohio_state_assembly_text_combo
+            self.customize_ohio_state_assembly_text_combo.setCurrentIndex(0)
+
+        self.prev_include_ohio_selection = self.include_ohio_state_assembly_edits_combo.currentText()
+
         if index == 1:  # If "Yes" is selected in the first question
             self.customize_ohio_state_assembly_text_label.show()
             self.customize_ohio_state_assembly_text_combo.show()
         else:
-            self.customize_ohio_state_assembly_text_label.hide()
-            self.customize_ohio_state_assembly_text_combo.hide()
             self.customize_ohio_state_assembly_text_label.hide()
             self.customize_ohio_state_assembly_text_combo.hide()
 
@@ -460,11 +517,12 @@ class PDFGeneratorApp(QMainWindow):
             self.custom_ohio_state_assembly_text10_label.hide()
             self.custom_ohio_state_assembly_text10_text.hide()
 
-    def toggleCustomizeTextOptions(self, index):
+    def toggleShowOhioStateEditFields(self, index):
         if index == 1:  # If "Yes" is selected in the first question
             self.customize_ohio_state_assembly_text_label.show()
             self.customize_ohio_state_assembly_text_combo.show()
-            # Show the additional labels for customizing Ohio State Assembly Edit text
+
+
             self.custom_ohio_state_assembly_text1_label.show()
             self.custom_ohio_state_assembly_text1_text.show()
 
@@ -495,9 +553,6 @@ class PDFGeneratorApp(QMainWindow):
             self.custom_ohio_state_assembly_text10_label.show()
             self.custom_ohio_state_assembly_text10_text.show()
         else:
-            self.customize_ohio_state_assembly_text_label.hide()
-            self.customize_ohio_state_assembly_text_combo.hide()
-            # Hide the additional labels for customizing Ohio State Assembly Edit text
             self.custom_ohio_state_assembly_text1_label.hide()
             self.custom_ohio_state_assembly_text1_text.hide()
 
@@ -589,7 +644,6 @@ class PDFGeneratorApp(QMainWindow):
             }
 
             if isinstance(states, str):
-                # If a single string is passed, convert it to a list
                 states = [states]
 
             state_dicts = []
@@ -603,8 +657,6 @@ class PDFGeneratorApp(QMainWindow):
                 }
                 state_dicts.append(state_dict)
             return state_dicts
-        
-        
             #########################################################################################################
             #       END OF generate_state_dicts(states)
             #########################################################################################################
@@ -616,25 +668,20 @@ class PDFGeneratorApp(QMainWindow):
         middle_given_name = self.middle_given_name_text.text()
         family_name = self.family_name_text.text()
         man_or_woman = self.man_or_woman.currentText()
-        selected_states = [item.text() for item in self.states_list.selectedItems()]
         street_address = self.street_address_text.text()
         city = self.city_text.text()
         zip_code = self.zip_text.text()
-        mailing_state = self.mailing_state_combo.currentText()
         social_security_number = self.social_security_number_text.text()
         irs_commissioner = self.irs_commissioner_text.text()
         local_irs_service_center_street_address = self.local_irs_service_center_street_address_text.text()
         local_irs_service_center_city = self.local_irs_service_center_city_text.text()
-        local_irs_service_center_state = self.local_irs_service_center_state_combo.currentText()
         local_irs_service_center_zip = self.local_irs_service_center_zip_text.text()
-        republic_of_birth = self.republic_of_birth.currentText()
-        notary_state = self.notary_state_combo.currentText()
         notary_county = self.notary_county_text.text()
-        sojourn_states_list = generate_state_dicts(selected_states)
-        mailing_address_state_list = generate_state_dicts(mailing_state)
-        republic_of_birth_list = generate_state_dicts(republic_of_birth)
-        notary_state_list = generate_state_dicts(notary_state)
-        local_irs_service_center_state_list = generate_state_dicts(local_irs_service_center_state)
+        sojourn_states_list = generate_state_dicts([item.text() for item in self.states_list.selectedItems()])
+        mailing_address_state_list = generate_state_dicts(self.mailing_state_combo.currentText())
+        republic_of_birth_list = generate_state_dicts(self.republic_of_birth.currentText())
+        notary_state_list = generate_state_dicts(self.notary_state_combo.currentText())
+        local_irs_service_center_state_list = generate_state_dicts(self.local_irs_service_center_state_combo.currentText())
         timestamp = datetime.now().strftime("%H_%M_%S")
         letter_of_intent_filename = f"01 - {first_given_name} {middle_given_name} {family_name} - Letter of Intent - {timestamp}.docx"
         affidavit_filename = f"02 - {first_given_name} {middle_given_name} {family_name} - Affidavit - {timestamp}.docx"
@@ -650,7 +697,7 @@ class PDFGeneratorApp(QMainWindow):
         def any_variable_empty(*variables):
             return any(not var for var in variables)
 
-        if any_variable_empty(first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state, local_irs_service_center_zip, republic_of_birth, notary_state, notary_county):
+        if any_variable_empty(first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_zip, notary_county):
             return
         
         docx_folder_path = QFileDialog.getExistingDirectory(self, "Select Folder to Save Your Revocation of Election Files", os.path.expanduser("~"))
@@ -660,77 +707,45 @@ class PDFGeneratorApp(QMainWindow):
             # LETTER OF INTENT:
             letter_of_intent_file_path = os.path.join(docx_folder_path, letter_of_intent_filename)
             letter_of_intent_document = Document()
-            self.create_letter_of_intent(letter_of_intent_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county)
+            self.create_letter_of_intent(letter_of_intent_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, mailing_address_state_list)
             letter_of_intent_document.save(letter_of_intent_file_path)
             
             # AFFIDAVIT:
             affidavit_file_path = os.path.join(docx_folder_path, affidavit_filename)
             affidavit_document = Document()
-            self.create_affidavit(affidavit_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, republic_of_birth, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county)
+            self.create_affidavit(affidavit_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county)
             affidavit_document.save(affidavit_file_path)
             
             # SUPPORTING EVIDENCE:
             supporting_evidence_file_path = os.path.join(docx_folder_path, supporting_evidence_filename)
             supporting_evidence_document = Document()
-            self.create_supporting_evidence(supporting_evidence_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county)
+            self.create_supporting_evidence(supporting_evidence_document, first_given_name, middle_given_name, family_name, man_or_woman, sojourn_states_list)
             supporting_evidence_document.save(supporting_evidence_file_path)
 
             # W-8BEN PDF CREATION:
             w_8ben_pdf_file_path = os.path.join(docx_folder_path, w_8ben_pdf_filename)
-            self.create_w_8ben_pdf(w_8ben_pdf_file_path, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county, country_of_citizenship, date_of_birth, include_ohio_state_edits)
+            self.create_w_8ben_pdf(w_8ben_pdf_file_path, first_given_name, middle_given_name, family_name, street_address, city, social_security_number, mailing_address_state_list, republic_of_birth_list, country_of_citizenship, date_of_birth, include_ohio_state_edits)
 
     #########################################################################################################
     #                       START OF create_letter_of_intent FUNCTION
     #########################################################################################################
-    def create_letter_of_intent(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county):
-
+    def create_letter_of_intent(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, mailing_address_state_list):
 
         #########################################################################################################
         #                       START OF DEFINING VARIABLES
         #########################################################################################################
-        # Extract the "State Name" from each dictionary
-        soujourn_state_names_list = [state_dict["State Name"] for state_dict in sojourn_states_list]
-        soujourn_state_names = ", ".join(soujourn_state_names_list)
-
-        # Extract the "State Abbreviations" from each dictionary
-        soujourn_state_abbreviations_list = [state_dict["State Abbreviation"] for state_dict in sojourn_states_list]
-        soujourn_state_abbreviations = ", ".join(soujourn_state_abbreviations_list)
-
-        # Extract the "State " from each dictionary
-        soujourn_republic_name_list = [state_dict["Republic Name"] for state_dict in sojourn_states_list]
-        soujourn_republic_names = ", ".join(soujourn_republic_name_list)
-
-        mailing_address_republic_name = mailing_address_state_list[0]['Republic Name']
         mailing_address_state_name = mailing_address_state_list[0]['State Name']
-        mailing_address_state_abbreviation = mailing_address_state_list[0]['State Abbreviation']
-
-        republic_of_birth_name = republic_of_birth_list[0]['Republic Name']
-        republic_of_birth_state = republic_of_birth_list[0]['State Name']
-        republic_of_birth_state_abbreviation = republic_of_birth_list[0]['State Abbreviation']
-
-        local_irs_service_center_republic_name = local_irs_service_center_state_list[0]['Republic Name']
-        local_irs_service_center_state__name = local_irs_service_center_state_list[0]['State Name']
         local_irs_service_center_state_abbreviation = local_irs_service_center_state_list[0]['State Abbreviation']
-
-        notary_republic_name = notary_state_list[0]['Republic Name']
-        notary_state_name = notary_state_list[0]['State Name']
-        notary_state_abbrivation = notary_state_list[0]['State Abbreviation']
-        
         vessel_name = first_given_name + ' ' + middle_given_name + ' ' + family_name
-        live_name = first_given_name + '-' + middle_given_name + ': ' + family_name
+        titlecased_name = vessel_name.title()
+        uppercase_name = vessel_name.upper()
 
-        # Determine the pronouns based on the 'are_you' variable
         if man_or_woman == 'Man':
             pronouns = ("he", "his", "him")
             gender = man_or_woman.lower()
         elif man_or_woman == 'Woman':
             pronouns = ("she", "her", "her")
             gender = man_or_woman.lower()
-
-
-        # Create variables for titlecased and uppercase versions of the name
-        titlecased_name = vessel_name.title()
-        uppercase_name = vessel_name.upper()
         #########################################################################################################
         #                       END OF DEFINING VARIABLES
         #########################################################################################################
@@ -813,7 +828,7 @@ class PDFGeneratorApp(QMainWindow):
         table.cell(1, 1).text = f"Re: Social Security Number: {social_security_number}"
         table.cell(2, 0).text = street_address
         table.cell(2, 1).text = "assigned by a federal agency to"
-        table.cell(3, 0).text = f"{city}, {mailing_state}"
+        table.cell(3, 0).text = f"{city}, {mailing_address_state_name}"
         # Get the cell you want to modify
         cell = table.cell(3, 1)
         # Create a run for the normal text (not italicized)
@@ -1038,7 +1053,7 @@ class PDFGeneratorApp(QMainWindow):
     #########################################################################################################
     #                       START OF create_affidavit FUNCTION
     #########################################################################################################
-    def create_affidavit(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, republic_of_birth, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county):
+    def create_affidavit(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, street_address, city, zip_code, social_security_number, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county):
 
         #########################################################################################################
         #                       START OF format_paragraph_keywords FUNCTION
@@ -1089,54 +1104,24 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         #                       START OF DEFINING VARIABLES
         #########################################################################################################
-        # Extract the "State Name" from each dictionary
-        soujourn_state_names_list = [state_dict["State Name"] for state_dict in sojourn_states_list]
-        soujourn_state_names = ", ".join(soujourn_state_names_list)
-
-        # Extract the "State Abbreviations" from each dictionary
         soujourn_state_abbreviations_list = [state_dict["State Abbreviation"] for state_dict in sojourn_states_list]
         soujourn_state_abbreviations = ", ".join(soujourn_state_abbreviations_list)
-
-        # Extract the "State " from each dictionary
         soujourn_republic_name_list = [state_dict["Republic Name"] for state_dict in sojourn_states_list]
         soujourn_republic_names = ", ".join(soujourn_republic_name_list)
-
-        mailing_address_republic_name = mailing_address_state_list[0]['Republic Name']
         mailing_address_state_name = mailing_address_state_list[0]['State Name']
-        mailing_address_state_abbreviation = mailing_address_state_list[0]['State Abbreviation']
-
         republic_of_birth_name = republic_of_birth_list[0]['Republic Name']
-        republic_of_birth_state = republic_of_birth_list[0]['State Name']
-        republic_of_birth_state_abbreviation = republic_of_birth_list[0]['State Abbreviation']
-
-        local_irs_service_center_republic_name = local_irs_service_center_state_list[0]['Republic Name']
-        local_irs_service_center_state__name = local_irs_service_center_state_list[0]['State Name']
-        local_irs_service_center_state_abbreviation = local_irs_service_center_state_list[0]['State Abbreviation']
-
         notary_republic_name = notary_state_list[0]['Republic Name']
-        notary_state_name = notary_state_list[0]['State Name']
-        notary_state_abbrivation = notary_state_list[0]['State Abbreviation']
-
         vessel_name = first_given_name + ' ' + middle_given_name + ' ' + family_name
-        live_name = first_given_name + '-' + middle_given_name + ': ' + family_name
+        titlecased_name = vessel_name.title()
+        uppercase_name = vessel_name.upper()
+        current_year = datetime.now().year
 
-        # Determine the pronouns based on the 'are_you' variable
         if man_or_woman == 'Man':
             pronouns = ("he", "his", "him")
             gender = man_or_woman.lower()
         elif man_or_woman == 'Woman':
             pronouns = ("she", "her", "her")
             gender = man_or_woman.lower()
-
-        # Create variables for titlecased and uppercase versions of the name
-        titlecased_name = vessel_name.title()
-        uppercase_name = vessel_name.upper()
-
-        # Get the current year
-        current_year = datetime.now().year
-
-        # Get the current date in the desired format
-        current_date = datetime.now().strftime("%m/%d/%Y")
         #########################################################################################################
         #                       END OF DEFINING VARIABLES
         #########################################################################################################
@@ -1221,7 +1206,7 @@ class PDFGeneratorApp(QMainWindow):
         docx_document.add_paragraph()
         
         # REASON #1
-        docx_document.add_paragraph(rf"Affiant was born in the {republic_of_birth} and is over twenty-one, of sound mind, competent and able to testify in matters set forth herein, and Affiant has personal knowledge of the facts stated herein and waives none of {pronouns[1]} inalienable rights.", style='List Number 2')
+        docx_document.add_paragraph(rf"Affiant was born in the {republic_of_birth_name} and is over twenty-one, of sound mind, competent and able to testify in matters set forth herein, and Affiant has personal knowledge of the facts stated herein and waives none of {pronouns[1]} inalienable rights.", style='List Number 2')
         docx_document.add_paragraph()
 
         # REASON #3
@@ -1435,7 +1420,7 @@ class PDFGeneratorApp(QMainWindow):
         docx_document.add_paragraph(f"{titlecased_name}, Authorized Representative", style=normal_style)
         docx_document.add_paragraph(f"c/o Non-domestic", style=normal_style)
         docx_document.add_paragraph(f"{street_address}", style=normal_style)
-        docx_document.add_paragraph(f"{city}, {mailing_state}", style=normal_style)
+        docx_document.add_paragraph(f"{city}, {mailing_address_state_name}", style=normal_style)
         docx_document.add_paragraph(f"USA [near {zip_code}]", style=normal_style)
 
         docx_document.add_paragraph()
@@ -1474,7 +1459,7 @@ class PDFGeneratorApp(QMainWindow):
     #########################################################################################################
     #                       START OF create_supporting_evidence FUNCTION
     #########################################################################################################
-    def create_supporting_evidence(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county):
+    def create_supporting_evidence(self, docx_document, first_given_name, middle_given_name, family_name, man_or_woman, sojourn_states_list):
         
         #########################################################################################################
         #                       START OF format_paragraph_keywords FUNCTION
@@ -1525,51 +1510,19 @@ class PDFGeneratorApp(QMainWindow):
         #########################################################################################################
         #                       START OF DEFINING VARIABLES
         #########################################################################################################
-        # Extract the "State Name" from each dictionary
         soujourn_state_names_list = [state_dict["State Name"] for state_dict in sojourn_states_list]
         soujourn_state_names = ", ".join(soujourn_state_names_list)
-
-        # Extract the "State Abbreviations" from each dictionary
         soujourn_state_abbreviations_list = [state_dict["State Abbreviation"] for state_dict in sojourn_states_list]
         soujourn_state_abbreviations = ", ".join(soujourn_state_abbreviations_list)
-
-        # Extract the "State " from each dictionary
         soujourn_republic_name_list = [state_dict["Republic Name"] for state_dict in sojourn_states_list]
         soujourn_republic_names = ", ".join(soujourn_republic_name_list)
-
-        mailing_address_republic_name = mailing_address_state_list[0]['Republic Name']
-        mailing_address_state_name = mailing_address_state_list[0]['State Name']
-        mailing_address_state_abbreviation = mailing_address_state_list[0]['State Abbreviation']
-
-        republic_of_birth_name = republic_of_birth_list[0]['Republic Name']
-        republic_of_birth_state = republic_of_birth_list[0]['State Name']
-        republic_of_birth_state_abbreviation = republic_of_birth_list[0]['State Abbreviation']
-
-        local_irs_service_center_republic_name = local_irs_service_center_state_list[0]['Republic Name']
-        local_irs_service_center_state__name = local_irs_service_center_state_list[0]['State Name']
-        local_irs_service_center_state_abbreviation = local_irs_service_center_state_list[0]['State Abbreviation']
-
-        notary_republic_name = notary_state_list[0]['Republic Name']
-        notary_state_name = notary_state_list[0]['State Name']
-        notary_state_abbrivation = notary_state_list[0]['State Abbreviation']
-
         vessel_name = first_given_name + ' ' + middle_given_name + ' ' + family_name
-        live_name = first_given_name + '-' + middle_given_name + ': ' + family_name
-
-        # Create variables for titlecased and uppercase versions of the name
         titlecased_name = vessel_name.title()
-        uppercase_name = vessel_name.upper()
 
-        # Determine the pronouns based on the 'are_you' variable
         if man_or_woman == 'Man':
             pronouns = ("he", "his", "him")
-            gender = man_or_woman.lower()
         elif man_or_woman == 'Woman':
             pronouns = ("she", "her", "her")
-            gender = man_or_woman.lower()
-
-        # Get the current date in the desired format
-        current_date = datetime.now().strftime("%m/%d/%Y")
         #########################################################################################################
         #                       END OF DEFINING VARIABLES
         #########################################################################################################
@@ -2303,54 +2256,13 @@ class PDFGeneratorApp(QMainWindow):
         #               END OF LETTER OF SUPPLEMENTAL INFORMATION
         #########################################################################################################
 
-    def create_w_8ben_pdf(self, w_8ben_pdf_file_path, first_given_name, middle_given_name, family_name, man_or_woman, selected_states, street_address, city, zip_code, mailing_state, social_security_number, irs_commissioner, local_irs_service_center_street_address, local_irs_service_center_city, local_irs_service_center_state_list, local_irs_service_center_zip, sojourn_states_list, mailing_address_state_list, republic_of_birth_list, notary_state_list, notary_county, country_of_citizenship, date_of_birth, include_ohio_state_edits):
+    def create_w_8ben_pdf(self, w_8ben_pdf_file_path, first_given_name, middle_given_name, family_name, street_address, city, social_security_number, mailing_address_state_list, republic_of_birth_list, country_of_citizenship, date_of_birth, include_ohio_state_edits):
         #########################################################################################################
         #                       START OF DEFINING VARIABLES
         #########################################################################################################
-        # Extract the "State Name" from each dictionary
-        soujourn_state_names_list = [state_dict["State Name"] for state_dict in sojourn_states_list]
-        soujourn_state_names = ", ".join(soujourn_state_names_list)
-
-        # Extract the "State Abbreviations" from each dictionary
-        soujourn_state_abbreviations_list = [state_dict["State Abbreviation"] for state_dict in sojourn_states_list]
-        soujourn_state_abbreviations = ", ".join(soujourn_state_abbreviations_list)
-
-        # Extract the "State " from each dictionary
-        soujourn_republic_name_list = [state_dict["Republic Name"] for state_dict in sojourn_states_list]
-        soujourn_republic_names = ", ".join(soujourn_republic_name_list)
-
-        mailing_address_republic_name = mailing_address_state_list[0]['Republic Name']
         mailing_address_state_name = mailing_address_state_list[0]['State Name']
-        mailing_address_state_abbreviation = mailing_address_state_list[0]['State Abbreviation']
-
-        republic_of_birth_name = republic_of_birth_list[0]['Republic Name']
         republic_of_birth_state = republic_of_birth_list[0]['State Name']
-        republic_of_birth_state_abbreviation = republic_of_birth_list[0]['State Abbreviation']
-
-        local_irs_service_center_republic_name = local_irs_service_center_state_list[0]['Republic Name']
-        local_irs_service_center_state__name = local_irs_service_center_state_list[0]['State Name']
-        local_irs_service_center_state_abbreviation = local_irs_service_center_state_list[0]['State Abbreviation']
-
-        notary_republic_name = notary_state_list[0]['Republic Name']
-        notary_state_name = notary_state_list[0]['State Name']
-        notary_state_abbrivation = notary_state_list[0]['State Abbreviation']
-
-        vessel_name = first_given_name + ' ' + middle_given_name + ' ' + family_name
         live_name = first_given_name + '-' + middle_given_name + ': ' + family_name
-
-        # Create variables for titlecased and uppercase versions of the name
-        titlecased_name = vessel_name.title()
-        uppercase_name = vessel_name.upper()
-
-        # Determine the pronouns based on the 'are_you' variable
-        if man_or_woman == 'Man':
-            pronouns = ("he", "his", "him")
-            gender = man_or_woman.lower()
-        elif man_or_woman == 'Woman':
-            pronouns = ("she", "her", "her")
-            gender = man_or_woman.lower()
-
-        # Get the current date in the desired format
         current_date = datetime.now().strftime("%m-%d-%Y")
         #########################################################################################################
         #                       END OF DEFINING VARIABLES
@@ -2432,9 +2344,6 @@ class PDFGeneratorApp(QMainWindow):
         # Create a PdfFileWriter to write the updated PDF
         pdf_writer = PyPDF2.PdfWriter()
 
-        # List to store form field names
-        field_names = []
-
         # Open the input PDF file in read-binary mode
         with open(pdf_input_path, 'rb') as pdf_file:
             pdf_reader = PyPDF2.PdfReader(pdf_file)
@@ -2443,18 +2352,8 @@ class PDFGeneratorApp(QMainWindow):
             if pdf_reader.is_encrypted:
                 pdf_reader.decrypt("")  # If the PDF is encrypted, provide a password here
 
-            # Extract form field names
-            if '/AcroForm' in pdf_reader.trailer:
-                acro_form = pdf_reader.trailer['/AcroForm']
-                for field in acro_form['/Fields']:
-                    field_names.append(field['/T'])
-
-            # Now you have a list of form field names
-            print("Form Field Names:", field_names)
-
-            # Access the first page of the PDF (modify the page index as needed)
+           # Access the first page of the PDF (modify the page index as needed)
             page = pdf_reader.pages[0]
-
 
             # Update the form field values
             pdf_writer.update_page_form_field_values(page, field_values)
@@ -2464,11 +2363,9 @@ class PDFGeneratorApp(QMainWindow):
         with open(w_8ben_pdf_file_path, 'wb') as output_pdf:
             pdf_writer.write(output_pdf)
 
-
     #########################################################################################################
     #                       END OF create_supporting_evidence FUNCTION
     #########################################################################################################
-
 
 def main():
     app = QApplication(sys.argv)

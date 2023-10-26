@@ -33,9 +33,9 @@ class PDFGeneratorApp(QMainWindow):
         layout = QVBoxLayout(self.central_widget)
         
         # WE SET THIS TO True FOR TESTING, SET IT TO False FOR PRODUCTION
-        TESTING = True
+        TESTING = False
 
-        PyROE_Version = 'v0.3'
+        PyROE_Version = 'v0.4'
 
         #########################################################################################################
         # SET GLOBAL FONT SIZE FOR APP UI

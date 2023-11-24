@@ -35,6 +35,12 @@ jobs:
       - name: Build Binary
         run: pyinstaller --onefile --add-data "assets:assets" PyROE.py
 
+      - name: Set executable bit for Linux and MacOS
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" || "${{ runner.os }}" == "macOS" ]]; then
+            chmod +x dist/PyROE
+          fi
+
       - name: Upload Binary
         uses: actions/upload-artifact@v3
         with:

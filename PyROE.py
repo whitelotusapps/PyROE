@@ -35,7 +35,7 @@ class PDFGeneratorApp(QMainWindow):
         # WE SET THIS TO True FOR TESTING, SET IT TO False FOR PRODUCTION
         TESTING = False
 
-        PyROE_Version = 'v0.4'
+        PyROE_Version = 'v0.5'
 
         #########################################################################################################
         # SET GLOBAL FONT SIZE FOR APP UI
@@ -987,7 +987,7 @@ class PDFGeneratorApp(QMainWindow):
         docx_document.add_paragraph(f"The purpose of the three documents enclosed is to provide you Actual Notice, instructions, and Affiant’s consent to change Affiant’s tax status by terminating the IRS’s “presumed” sub silentio voluntary election to be treated as a “taxpayer” and to have you change Affiant’s tax status within all relevant IRS databases.", style=normal_style)
         docx_document.add_paragraph()
 
-        docx_document.add_paragraph(f"Affiant’s AFFIDAVIT is enclosed and incorporated here for the purpose of explaining and verifying Affiant’s tax status jurisdiction that lawfully qualifies {pronouns[1]} to have {pronouns[1]} tax status changed to that of a “non-taxpayer” or any other similar non-taxable designation.", style=normal_style)
+        docx_document.add_paragraph(f"Affiant’s AFFIDAVIT is enclosed and incorporated here for the purpose of explaining and verifying Affiant’s tax status jurisdiction that lawfully qualifies {pronouns[2]} to have {pronouns[1]} tax status changed to that of a “non-taxpayer” or any other similar non-taxable designation.", style=normal_style)
         docx_document.add_paragraph()
 
         docx_document.add_paragraph(f"Affiant believes in paying all taxes lawfully owed to support {pronouns[1]} country and {pronouns[0]} presently pays various types of sales taxes, use taxes, and State taxes to perform {pronouns[1]} civic duty to society. Affiant does not protest against any taxes lawfully owed.", style=normal_style)
@@ -2190,7 +2190,7 @@ class PDFGeneratorApp(QMainWindow):
         docx_document.add_paragraph()
 
         # REASON #71
-        paragraph = docx_document.add_paragraph(f"Affiant declares here that {pronouns[0]} is a natural person man alive and well in the Constitutional Republic of Indiana without (not within) the juristic statutory foreign jurisdiction of the IRS and nothing in the IRC applies to “natural persons”  (unless by election) as said regulations would then be unlawful and repugnant to the Constitution (1787) as President William Taft and many higher court case rulings on income tax issues have so aptly pointed out.", style='List Number 2')
+        paragraph = docx_document.add_paragraph(f"Affiant declares here that {pronouns[0]} is a natural person man alive and well in the Constitutional {'Republic' if len(soujourn_republic_name_list) == 1 else 'Republics'} of {', '.join(soujourn_republic_name_list)} without (not within) the juristic statutory foreign jurisdiction of the IRS and nothing in the IRC applies to “natural persons”  (unless by election) as said regulations would then be unlawful and repugnant to the Constitution (1787) as President William Taft and many higher court case rulings on income tax issues have so aptly pointed out.", style='List Number 2')
         docx_document.add_paragraph()
 
         # REASON #72
@@ -2351,7 +2351,7 @@ class PDFGeneratorApp(QMainWindow):
         docx_document.add_paragraph()
 
         # REASON #97
-        paragraph = docx_document.add_paragraph(f"The above stated Internal Revenue Code laws, rules, regulations, and court case rulings confirm and substantiate Affiant's Revocation of Election and the IRS's internal records must now show John Q. Public's “non-taxable” status.", style='List Number 2')
+        paragraph = docx_document.add_paragraph(f"The above stated Internal Revenue Code laws, rules, regulations, and court case rulings confirm and substantiate Affiant's Revocation of Election and the IRS's internal records must now show {titlecased_name}'s “non-taxable” status.", style='List Number 2')
         docx_document.add_paragraph()
 
         # REASON #98

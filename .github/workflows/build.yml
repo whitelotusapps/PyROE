@@ -43,6 +43,7 @@ jobs:
             # Additional command for Windows if needed
             # For example, you might need to sign the executable
             # or set its attributes using icacls.
+            :
           fi
 
       - name: Upload Binary

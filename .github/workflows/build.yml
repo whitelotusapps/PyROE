@@ -37,9 +37,9 @@ jobs:
 
       - name: Set executable bit for Linux and MacOS
         run: |
-          if [[ "${{ runner.os }}" == "Linux" || "${{ runner.os }}" == "macOS" ]]; then
-            chmod +x dist/PyROE
-          fi
+          if ($Env:RUNNER_OS -eq "Linux" -or $Env:RUNNER_OS -eq "macOS") {
+            chmod +x dist/YourBinaryName
+          }
 
       - name: Upload Binary
         uses: actions/upload-artifact@v3

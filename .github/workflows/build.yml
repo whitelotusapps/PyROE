@@ -36,15 +36,8 @@ jobs:
         run: pyinstaller --onefile --add-data "assets:assets" PyROE.py
 
       - name: Set executable bit for Linux and MacOS
-        run: |
-          if [[ "$RUNNER_OS" == "Linux" || "$RUNNER_OS" == "macOS" ]]; then
-            chmod +x dist/PyROE
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            # Additional command for Windows if needed
-            # For example, you might need to sign the executable
-            # or set its attributes using icacls.
-            :
-          fi
+        if: runner.os != 'Windows'
+        run: chmod +x dist/PyROE
 
       - name: Upload Binary
         uses: actions/upload-artifact@v3

@@ -38,7 +38,7 @@ jobs:
       - name: Set executable bit for Linux and MacOS
         run: |
           if [[ "$RUNNER_OS" == "Linux" || "$RUNNER_OS" == "macOS" ]]; then
-            chmod +x dist/YourBinaryName
+            chmod +x dist/PyROE
           elif [ "$RUNNER_OS" == "Windows" ]; then
             # Additional command for Windows if needed
             # For example, you might need to sign the executable

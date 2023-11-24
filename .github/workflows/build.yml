@@ -37,9 +37,13 @@ jobs:
 
       - name: Set executable bit for Linux and MacOS
         run: |
-          if ($Env:RUNNER_OS -eq "Linux" -or $Env:RUNNER_OS -eq "macOS") {
+          if [[ "$RUNNER_OS" == "Linux" || "$RUNNER_OS" == "macOS" ]]; then
             chmod +x dist/YourBinaryName
-          }
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            # Additional command for Windows if needed
+            # For example, you might need to sign the executable
+            # or set its attributes using icacls.
+          fi
 
       - name: Upload Binary
         uses: actions/upload-artifact@v3
